@@ -17,16 +17,15 @@ private:
 	std::string fName;
 	std::string sName;
 	std::string lName;
-	int deposite;
+	int balance;
 	char type;
 
 public:
 	friend void write_account(Account);
 	friend void display(int Account_Number);
 	void create_account();
-	int return_account_number() const;
 	void show_account() const;
-	//int depe();
+	void depo(int, int);
 
 }; // CLASS ENDS HERE
 
@@ -34,6 +33,8 @@ public:
 const int alpSize = 27;
 std::string converter;
 char alphapet[alpSize] = { 'A','B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W','X','Y','Z' };
+bool checker = false;
+
 
 //***************************************************************
 //                   FUCNTIONS DECLARATION
@@ -71,7 +72,7 @@ void Account::create_account() {
 	std::cin >> type;
 	type = toupper(type);
 	std::cout << "Enter the initial deposite amount" << std::endl;
-	std::cin >> deposite;
+	std::cin >> balance;
 	std::cout << "\n\nAccount Created ...";
 
 }
@@ -88,11 +89,6 @@ std::string upperCase(std::string& name) {
 	}
 	return name;
 }
-
-
-
-
-
 
 
 int main() {
@@ -157,7 +153,7 @@ int main() {
 void write_account(Account ac) {
 	std::ofstream outFile("account.txt", std::ios::app);
 	ac.create_account();
-	outFile << ac.accountNumber << " " << ac.fName << " " << ac.sName << " " << ac.lName << " " << ac.type << " " << ac.deposite << std::endl;
+	outFile << ac.accountNumber << " " << ac.fName << " " << ac.sName << " " << ac.lName << " " << ac.type << " " << ac.balance << std::endl;
 	outFile.close();
 }
 
@@ -188,17 +184,17 @@ void mainMenu() {
 //***************************************************************
 
 void display(int Account_Number) {
-	bool checker = false;
 	Account ac;
 	std::ifstream displayObject("account.txt", std::ios::in);
 	if (!displayObject) {
 		std::cout << "File Couldn't Be Open .. Press Any Key" << std::endl;
 	}
 
-	while (displayObject >> ac.accountNumber >> ac.fName >> ac.sName >> ac.lName >> ac.type >> ac.deposite) {
+	while (displayObject >> ac.accountNumber >> ac.fName >> ac.sName >> ac.lName >> ac.type >> ac.balance) {
 		if (Account_Number == ac.accountNumber) {
 			checker = true;
 			ac.show_account();
+			displayObject.close();
 		}
 	}
 
@@ -209,8 +205,8 @@ void display(int Account_Number) {
 		std::cin.ignore();
 	}
 
-
 }
+
 
 
 
@@ -309,7 +305,7 @@ void Account::show_account() const {
 	std::cout << "\n Account Number : " << accountNumber << std::endl;
 	std::cout << " Account Name : " << fName << " " << sName[0] << "." << lName << std::endl;
 	std::cout << " Account Type : " << type << std::endl;
-	std::cout << " Account Balance : " << deposite << std::endl;
+	std::cout << " Account Balance : " << balance << std::endl;
 	std::cout << "\nPress Enter Key ...";
 
 	std::cin.get();
@@ -322,13 +318,46 @@ void Account::show_account() const {
 //***************************************************************
 
 void deposite_darw(int option, int Account_Number) {
+	Account ac;
+	int deposite = 0;
+
 	switch (option)
 	{
 	case 1:
 		display(Account_Number);
+		system("cls");
+		if (checker == true) {
+			checker = false;
+			std::cout << "Enter Deposite Amount" << std::endl;
+			std::cin >> deposite;
+			ac.depo(deposite, Account_Number);
+
+		}
+
 	case 2:
 
 	default:
 		break;
 	}
+}
+void Account::depo(int deposite, int Account_Number) {
+	std::ifstream inFile;
+	std::ofstream outFile;
+	inFile.open("account.txt", std::ios::in);
+	outFile.open("newAccount.txt", std::ios::out);
+	while (inFile >> accountNumber >> fName >> sName >> lName >> type >> balance)
+	{
+		if (accountNumber == Account_Number) {
+			balance += deposite;
+			std::cout << "Your New balance is " << balance << std::endl;
+			std::cin.get();
+			std::cin.ignore();
+		}
+
+		outFile << accountNumber << " " << fName << " " << sName << " " << lName << " " << type << " " << balance << std::endl;
+		
+	}
+	inFile.close();
+	outFile.close();
+
 }
