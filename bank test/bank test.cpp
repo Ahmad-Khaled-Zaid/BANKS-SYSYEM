@@ -19,22 +19,32 @@ private:
 	std::string lName;
 	int deposite;
 	char type;
-	friend void write_account(Account);
 
 public:
-
+	friend void write_account(Account);
+	friend void display(int Account_Number);
 	void create_account();
+	int return_account_number() const;
+	void show_account() const;
+	//int depe();
 
 }; // CLASS ENDS HERE
 
 
-const int size = 17;
 const int alpSize = 27;
 std::string converter;
-char alphapet[alpSize] = { 'a','b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w','x','y','z' };
-std::string lowerCase(std::string& name);
+char alphapet[alpSize] = { 'A','B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W','X','Y','Z' };
+
+//***************************************************************
+//                   FUCNTIONS DECLARATION
+//***************************************************************
+std::string upperCase(std::string& name);
 void checkName(std::string&, int, std::string);
 void check_ID(int&);
+void mainMenu();
+void display(int);
+void deposite_darw(int, int);
+
 
 
 //***************************************************************
@@ -66,9 +76,97 @@ void Account::create_account() {
 
 }
 
+
+
+
+
+
+std::string upperCase(std::string& name) {
+	for (int i = 0; i < name.size(); i++)
+	{
+		name[i] = toupper(name[i]);
+	}
+	return name;
+}
+
+
+
+
+
+
+
+int main() {
+	Account ac;
+	int choice = 0;
+	int Account_Number;
+	do {
+		mainMenu();
+		std::cin >> choice;
+		system("cls");
+		switch (choice)
+		{
+		case 1:
+			write_account(ac);
+			break;
+
+		case 2:
+			std::cout << "Enter Account Number : ";
+			std::cin >> Account_Number;
+			deposite_darw(1, Account_Number);
+			break;
+
+		case 3:
+			std::cout << "Enter Account Number : ";
+			std::cin >> Account_Number;
+			deposite_darw(2, Account_Number);
+			break;
+
+		case 4:
+			std::cout << "Enter Account Number" << std::endl;
+			std::cin >> Account_Number;
+			display(Account_Number);
+			break;
+
+		case 5:
+			break;
+
+		case 6:
+			break;
+
+		case 7:
+			break;
+
+		case 8:
+			break;
+
+		default:
+			break;
+		}
+	} while (choice != 8);
+}
+
+
+
+
+
+
 //***************************************************************
-//                   FUCNTIONS DECLARATION
+//              FUCNTION TO CREATE NEW ACCOUNT
 //***************************************************************
+
+void write_account(Account ac) {
+	std::ofstream outFile("account.txt", std::ios::app);
+	ac.create_account();
+	outFile << ac.accountNumber << " " << ac.fName << " " << ac.sName << " " << ac.lName << " " << ac.type << " " << ac.deposite << std::endl;
+	outFile.close();
+}
+
+
+
+//***************************************************************
+//              FUCNTION TO PRESENT THE BANK SEVIES  
+//***************************************************************
+
 
 void mainMenu() {
 	system("cls");
@@ -84,28 +182,51 @@ void mainMenu() {
 	std::cout << "\n\n\tSelect Your Option (1-8) ";
 }
 
-void write_account(Account ac) {
-	std::ofstream outFile("account.txt", std::ios::app);
-	ac.create_account();
-	outFile << ac.accountNumber << " " << ac.fName << " " << ac.sName << " " << ac.lName << " " << ac.type << " " << ac.deposite << std::endl;
 
-}
+//***************************************************************
+//        FUCNTION TO DISPLAY ACCOUNT DETAILS  
+//***************************************************************
 
-std::string lowerCase(std::string& name) {
-	for (int i = 0; i < name.size(); i++)
-	{
-		name[i] = tolower(name[i]);
+void display(int Account_Number) {
+	bool checker = false;
+	Account ac;
+	std::ifstream displayObject("account.txt", std::ios::in);
+	if (!displayObject) {
+		std::cout << "File Couldn't Be Open .. Press Any Key" << std::endl;
 	}
-	return name;
+
+	while (displayObject >> ac.accountNumber >> ac.fName >> ac.sName >> ac.lName >> ac.type >> ac.deposite) {
+		if (Account_Number == ac.accountNumber) {
+			checker = true;
+			ac.show_account();
+		}
+	}
+
+	if (checker == false) {
+		std::cout << "Account not found!..." << std::endl;
+
+		std::cin.get();
+		std::cin.ignore();
+	}
+
+
 }
 
+
+
+//***************************************************************
+//        FUCNTION TO CHECK THE ACCOUNT HOLDER NAME  
+//***************************************************************
+
+
+// restrict users to enter only letters 
 void checkName(std::string& name, int accountNumber, std::string order) {
 	while (true)
 	{
 
-		int breaks = 0;
+		bool breaks = false;
 		std::cin >> name;
-		lowerCase(name);
+		upperCase(name);
 
 		for (int i = 0; i < name.size(); i++)
 		{
@@ -117,7 +238,7 @@ void checkName(std::string& name, int accountNumber, std::string order) {
 				}
 				else if (name[i] != alphapet[j] && j == alpSize - 1) {
 					system("cls");
-					breaks++;
+					breaks = true;
 					std::cout << "Account Number : " << accountNumber << std::endl;
 					std::cout << "Invalid Input , Please Enter The " << order << " Name : ";
 					break;
@@ -129,15 +250,22 @@ void checkName(std::string& name, int accountNumber, std::string order) {
 
 			}
 
-			if (breaks == 1) break;
+			if (breaks) break;
 		}
-		if (breaks == 0) break;
+		if (!breaks) break;
 
 	}
 }
 
-// restrict user to enter only integers data type and integer length is 9 digits only
 
+//***************************************************************
+//        FUCNTION TO CHECK THE ACCOUNT NUMBER
+//***************************************************************
+
+
+
+
+// restrict users to enter only integer data type and integer length is 9 digits only
 void check_ID(int& accountNumber) {
 	while (true)
 	{
@@ -172,43 +300,35 @@ void check_ID(int& accountNumber) {
 }
 
 
+//***************************************************************
+//        FUCNTION TO PRINT ACCOUNT INFO.
+//***************************************************************
 
-int main() {
-	Account ac;
-	int choice = 0;
-	do {
-		mainMenu();
-		std::cin >> choice;
-		system("cls");
-		switch (choice)
-		{
-		case 1:
-			write_account(ac);
-			break;
+void Account::show_account() const {
+	system("cls");
+	std::cout << "\n Account Number : " << accountNumber << std::endl;
+	std::cout << " Account Name : " << fName << " " << sName[0] << "." << lName << std::endl;
+	std::cout << " Account Type : " << type << std::endl;
+	std::cout << " Account Balance : " << deposite << std::endl;
+	std::cout << "\nPress Enter Key ...";
 
-		case 2:
-			break;
+	std::cin.get();
+	std::cin.ignore();
+}
 
-		case 3:
-			break;
 
-		case 4:
-			break;
+//***************************************************************
+//        FUCNTION TO DEPOSITE AMOUNT TO EXIST ACCOUNT.
+//***************************************************************
 
-		case 5:
-			break;
+void deposite_darw(int option, int Account_Number) {
+	switch (option)
+	{
+	case 1:
+		display(Account_Number);
+	case 2:
 
-		case 6:
-			break;
-
-		case 7:
-			break;
-
-		case 8:
-			break;
-
-		default:
-			break;
-		}
-	} while (choice != 8);
+	default:
+		break;
+	}
 }
