@@ -6,6 +6,7 @@
 #include<fstream>
 #include<string>
 #include<sstream>  
+#include<cctype>  
 
 //***************************************************************
 //                   CLASS USED IN PROJECT
@@ -25,7 +26,10 @@ public:
 	friend void display(int Account_Number);
 	void create_account();
 	void show_account() const;
-	void depo(int, int);
+	void updateAccount(int, int, int);
+	void depo(int);
+	void draw(int);
+	int remove_account();
 
 }; // CLASS ENDS HERE
 
@@ -44,6 +48,7 @@ void check_ID(int&);
 void mainMenu();
 void display(int);
 void deposite_darw(int, int);
+void delete_account(int);
 
 
 
@@ -87,6 +92,7 @@ std::string upperCase(std::string& name) {
 		name[i] = toupper(name[i]);
 	}
 	return name;
+
 }
 
 
@@ -107,6 +113,7 @@ int main() {
 		case 2:
 			std::cout << "Enter Account Number : ";
 			std::cin >> Account_Number;
+
 			deposite_darw(1, Account_Number);
 			break;
 
@@ -117,7 +124,7 @@ int main() {
 			break;
 
 		case 4:
-			std::cout << "Enter Account Number" << std::endl;
+			std::cout << "Enter Account Number: ";
 			std::cin >> Account_Number;
 			display(Account_Number);
 			break;
@@ -126,6 +133,9 @@ int main() {
 			break;
 
 		case 6:
+			std::cout << "Enter Account Number : ";
+			std::cin >> Account_Number;
+			delete_account(Account_Number);
 			break;
 
 		case 7:
@@ -311,39 +321,85 @@ void Account::show_account() const {
 
 
 //***************************************************************
-//        FUCNTION TO DEPOSITE AMOUNT TO EXIST ACCOUNT.
+//    FUCNTION TO DEPOSITE AND DRAW AMOUNT TO EXIST ACCOUNT.
 //***************************************************************
 
 void deposite_darw(int option, int Account_Number) {
 	Account ac;
 	int deposite = 0;
+	int draw = 0;
 
 	switch (option)
 	{
 	case 1:
 		system("cls");
 		display(Account_Number);
-		//std::cout << checker << std::endl;
 		if (checker == true) {
 			checker = false;
 			std::cout << "\nEnter Deposite Amount : ";
 			std::cin >> deposite;
-			ac.depo(deposite, Account_Number);
+			ac.updateAccount(deposite, Account_Number, 1);
 
 		}
 
 		break;
 
 	case 2:
+		system("cls");
+		display(Account_Number);
+		if (checker == true) {
+			checker = false;
+			std::cout << "\nEnter Deposite Amount : ";
+			std::cin >> draw;
+			ac.updateAccount(draw, Account_Number, 2);
+
+		}
+
+		break;
 
 	default:
 		break;
 	}
 }
-void Account::depo(int deposite, int Account_Number) {
+
+void delete_account(int Account_Number) {
+	Account ac;
+
+	system("cls");
+	display(Account_Number);
+	if (checker == true) {
+		checker = false;
+		ac.updateAccount(0, Account_Number, 3);
+
+	}
+}
+
+void Account::depo(int deposite) {
+	balance += deposite;
+	std::cout << "Your New balance is " << balance << std::endl;
+	std::cout << "\n\nEnter -> Main Menu" << std::endl;
+
+}
+
+void Account::draw(int draw) {
+	balance -= draw;
+	std::cout << "Your New balance is " << balance << std::endl;
+	std::cout << "\n\nEnter -> Main Menu" << std::endl;
+
+}
+
+int Account::remove_account() {
+	return accountNumber;
+
+}
+
+
+
+void Account::updateAccount(int operation, int Account_Number, int Case) {
 	std::fstream inFile;
 	std::fstream outFile;
 	bool fileStatues = true;
+	char decision = 'Y';
 	inFile.open("account.txt", std::ios::in);
 	outFile.open("newAccount.txt", std::ios::out);
 	if (!inFile.is_open() || !outFile.is_open())
@@ -357,10 +413,33 @@ void Account::depo(int deposite, int Account_Number) {
 		while (inFile >> accountNumber >> fName >> sName >> lName >> type >> balance)
 		{
 			if (accountNumber == Account_Number) {
-				balance += deposite;
-				std::cout << "Your New balance is " << balance << std::endl;
-				std::cout << "\n\nEnter -> Main Menu" << std::endl;
+				switch (Case)
+				{
+				case 1:
+					depo(operation);
+					break;
+				case 2:
+					draw(operation);
+					break;
+				case 3:
+					std::cout << " \n\n Are You sure You Want To Close Your Account?(y/n) :  ";
+					std::cin >> decision;
+					decision = tolower(decision);
+					if (decision == 'y') {
+						std::cout << "\n\nAccount " << remove_account() << " Has Been Deleted..." << std::endl;
+						continue;
+					}
+					else {
+						std::cout << "\n\n Operation Canceled..." << std::endl;
+						std::cout << "\n\n Enter-> Main Menu..." << std::endl;
+						break;
+					}
 
+					break;
+
+				default:
+					break;
+				}
 			}
 
 			outFile << accountNumber << " " << fName << " " << sName << " " << lName << " " << type << " " << balance << std::endl;
