@@ -29,11 +29,10 @@ public:
 
 }; // CLASS ENDS HERE
 
-
+bool checker = false;
 const int alpSize = 27;
 std::string converter;
 char alphapet[alpSize] = { 'A','B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W','X','Y','Z' };
-bool checker = false;
 
 
 //***************************************************************
@@ -138,6 +137,8 @@ int main() {
 		default:
 			break;
 		}
+		std::cin.get();
+		std::cin.ignore();
 	} while (choice != 8);
 }
 
@@ -201,8 +202,6 @@ void display(int Account_Number) {
 	if (checker == false) {
 		std::cout << "Account not found!..." << std::endl;
 
-		std::cin.get();
-		std::cin.ignore();
 	}
 
 }
@@ -306,10 +305,8 @@ void Account::show_account() const {
 	std::cout << " Account Name : " << fName << " " << sName[0] << "." << lName << std::endl;
 	std::cout << " Account Type : " << type << std::endl;
 	std::cout << " Account Balance : " << balance << std::endl;
-	std::cout << "\nPress Enter Key ...";
+	//std::cout << "\nPress Enter Key ..." << std::endl;
 
-	std::cin.get();
-	std::cin.ignore();
 }
 
 
@@ -324,15 +321,18 @@ void deposite_darw(int option, int Account_Number) {
 	switch (option)
 	{
 	case 1:
-		display(Account_Number);
 		system("cls");
+		display(Account_Number);
+		//std::cout << checker << std::endl;
 		if (checker == true) {
 			checker = false;
-			std::cout << "Enter Deposite Amount" << std::endl;
+			std::cout << "\nEnter Deposite Amount : ";
 			std::cin >> deposite;
 			ac.depo(deposite, Account_Number);
 
 		}
+
+		break;
 
 	case 2:
 
@@ -341,22 +341,41 @@ void deposite_darw(int option, int Account_Number) {
 	}
 }
 void Account::depo(int deposite, int Account_Number) {
-	std::ifstream inFile;
-	std::ofstream outFile;
+	std::fstream inFile;
+	std::fstream outFile;
+	bool fileStatues = true;
 	inFile.open("account.txt", std::ios::in);
 	outFile.open("newAccount.txt", std::ios::out);
-	while (inFile >> accountNumber >> fName >> sName >> lName >> type >> balance)
+	if (!inFile.is_open() || !outFile.is_open())
 	{
-		if (accountNumber == Account_Number) {
-			balance += deposite;
-			std::cout << "Your New balance is " << balance << std::endl;
-			std::cin.get();
-			std::cin.ignore();
-		}
+		std::cout << "File Couldn't Be Open , Please Check File Status" << std::endl;
 
-		outFile << accountNumber << " " << fName << " " << sName << " " << lName << " " << type << " " << balance << std::endl;
-		
+		fileStatues = false;
 	}
+	if (fileStatues)
+	{
+		while (inFile >> accountNumber >> fName >> sName >> lName >> type >> balance)
+		{
+			if (accountNumber == Account_Number) {
+				balance += deposite;
+				std::cout << "Your New balance is " << balance << std::endl;
+				std::cout << "\n\nEnter -> Main Menu" << std::endl;
+
+			}
+
+			outFile << accountNumber << " " << fName << " " << sName << " " << lName << " " << type << " " << balance << std::endl;
+
+		}
+		inFile.close();
+		outFile.close();
+		outFile.open("newAccount.txt", std::ios::in);
+		inFile.open("account.txt", std::ios::out);
+		while (outFile >> accountNumber >> fName >> sName >> lName >> type >> balance)
+		{
+			inFile << accountNumber << " " << fName << " " << sName << " " << lName << " " << type << " " << balance << std::endl;
+		}
+	}
+
 	inFile.close();
 	outFile.close();
 
