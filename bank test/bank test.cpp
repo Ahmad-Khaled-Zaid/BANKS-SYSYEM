@@ -30,7 +30,7 @@ public:
 	void depo(int);
 	void draw(int);
 	void print_all_accounts();
-	void adjust();
+	void adjust(int);
 
 }; // CLASS ENDS HERE
 
@@ -45,7 +45,7 @@ char alphapet[alpSize] = { 'A','B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
 //***************************************************************
 std::string upperCase(std::string& name);
 void checkName(std::string&, int, std::string);
-void check_ID(int&);
+int check_ID(int);
 void mainMenu();
 void display(int);
 void deposite_darw(int, int);
@@ -59,11 +59,12 @@ void modify_account(int);
 //                  MEMBERS FUNCTIONS DEFENITIONS
 //***************************************************************
 void Account::create_account() {
-
+	int number = 0;
 	std::cout << "Enter Account Number (9 digits) : ";
-
-	check_ID(accountNumber);
-
+	//std::cin >> number;
+	//accountNumber = check_ID(number);
+	accountNumber = check_ID(number);
+	//std::cout << number << std::endl;
 	system("cls");
 	std::cout << "Account ID : " << accountNumber << std::endl;
 	std::cout << "Enter The name of the account holder " << std::endl;
@@ -144,8 +145,7 @@ void Account::updateAccount(int operation, int Account_Number, int Case) {
 
 					break;
 				case 4:
-					adjust();
-
+					adjust(accountNumber);
 					break;
 
 				default:
@@ -172,8 +172,9 @@ void Account::updateAccount(int operation, int Account_Number, int Case) {
 }
 
 
-void Account::adjust() {
+void Account::adjust(int account_Number) {
 	int change = 0;
+	int number = 0;
 	std::cout << "1. Account Number" << std::endl;
 	std::cout << "2. First Name" << std::endl;
 	std::cout << "3. Second Name" << std::endl;
@@ -185,8 +186,9 @@ void Account::adjust() {
 	{
 	case 1:
 		std::cout << "Enter New Account Number : ";
-		std::cin >> accountNumber;
 
+		accountNumber = check_ID(account_Number);
+		std::cout << "Your Account Number Has Been Changed" << std::endl;
 		break;
 
 	case 2:
@@ -229,7 +231,8 @@ void Account::adjust() {
 int main() {
 	Account ac;
 	int choice = 0;
-	int Account_Number;
+	int Account_Number = 0;
+	int number = 0;
 	do {
 		mainMenu();
 		std::cin >> choice;
@@ -272,6 +275,7 @@ int main() {
 		case 7:
 			std::cout << "Enter Account Number : ";
 			std::cin >> Account_Number;
+			//number = check_ID(Account_Number);
 			modify_account(Account_Number);
 			break;
 
@@ -406,7 +410,7 @@ void checkName(std::string& name, int accountNumber, std::string order) {
 //***************************************************************
 
 // restrict users to enter only integer data type and integer length is 9 digits only
-void check_ID(int& accountNumber) {
+int check_ID(int accountNumber) {
 	while (true)
 	{
 
@@ -434,8 +438,9 @@ void check_ID(int& accountNumber) {
 			continue;
 		}
 
-		else
-			break;
+		else {
+			return accountNumber;
+		}
 	}
 }
 
