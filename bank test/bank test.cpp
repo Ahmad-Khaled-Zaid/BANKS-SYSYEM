@@ -29,7 +29,8 @@ public:
 	void updateAccount(int, int, int);
 	void depo(int);
 	void draw(int);
-	int remove_account();
+	void print_all_accounts();
+	void adjust();
 
 }; // CLASS ENDS HERE
 
@@ -40,7 +41,7 @@ char alphapet[alpSize] = { 'A','B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
 
 
 //***************************************************************
-//                   FUCNTIONS DECLARATION
+//                   FUCNTIONS DECLARATIONS
 //***************************************************************
 std::string upperCase(std::string& name);
 void checkName(std::string&, int, std::string);
@@ -49,6 +50,8 @@ void mainMenu();
 void display(int);
 void deposite_darw(int, int);
 void delete_account(int);
+void print_accounts();
+void modify_account(int);
 
 
 
@@ -82,18 +85,145 @@ void Account::create_account() {
 }
 
 
-
-
-
-
-std::string upperCase(std::string& name) {
-	for (int i = 0; i < name.size(); i++)
-	{
-		name[i] = toupper(name[i]);
-	}
-	return name;
+void Account::depo(int deposite) {
+	balance += deposite;
+	std::cout << "Your New balance is " << balance << std::endl;
+	std::cout << "\n\nEnter -> Main Menu" << std::endl;
 
 }
+
+void Account::draw(int draw) {
+	balance -= draw;
+	std::cout << "Your New balance is " << balance << std::endl;
+	std::cout << "\n\nEnter -> Main Menu" << std::endl;
+
+}
+
+
+
+
+void Account::updateAccount(int operation, int Account_Number, int Case) {
+	std::fstream inFile;
+	std::fstream outFile;
+	bool fileStatues = true;
+	char decision = 'Y';
+	inFile.open("account.txt", std::ios::in);
+	outFile.open("newAccount.txt", std::ios::out);
+	if (!inFile.is_open() || !outFile.is_open())
+	{
+		std::cout << "File Couldn't Be Open , Please Check File Status" << std::endl;
+
+		fileStatues = false;
+	}
+	if (fileStatues)
+	{
+		while (inFile >> accountNumber >> fName >> sName >> lName >> type >> balance)
+		{
+			if (accountNumber == Account_Number) {
+				switch (Case)
+				{
+				case 1:
+					depo(operation);
+					break;
+				case 2:
+					draw(operation);
+					break;
+				case 3:
+					std::cout << " \n\n Are You sure You Want To Close Your Account?(Press y if you're sure) :  ";
+					std::cin >> decision;
+					decision = tolower(decision);
+					if (decision == 'y') {
+						std::cout << "\n\nAccount " << Account_Number << " Has Been Deleted..." << std::endl;
+						continue;
+					}
+					else {
+						std::cout << "\n\n Operation Canceled..." << std::endl;
+						std::cout << "\n\n Enter-> Main Menu..." << std::endl;
+						break;
+					}
+
+					break;
+				case 4:
+					adjust();
+
+					break;
+
+				default:
+					break;
+				}
+			}
+
+			outFile << accountNumber << " " << fName << " " << sName << " " << lName << " " << type << " " << balance << std::endl;
+
+		}
+		inFile.close();
+		outFile.close();
+		outFile.open("newAccount.txt", std::ios::in);
+		inFile.open("account.txt", std::ios::out);
+		while (outFile >> accountNumber >> fName >> sName >> lName >> type >> balance)
+		{
+			inFile << accountNumber << " " << fName << " " << sName << " " << lName << " " << type << " " << balance << std::endl;
+		}
+	}
+
+	inFile.close();
+	outFile.close();
+
+}
+
+
+void Account::adjust() {
+	int change = 0;
+	std::cout << "1. Account Number" << std::endl;
+	std::cout << "2. First Name" << std::endl;
+	std::cout << "3. Second Name" << std::endl;
+	std::cout << "4. Last Name" << std::endl;
+	std::cout << "5. Account Type" << std::endl;
+	std::cout << "What Info You want to change? " << std::endl;
+	std::cin >> change;
+	switch (change)
+	{
+	case 1:
+		std::cout << "Enter New Account Number : ";
+		std::cin >> accountNumber;
+
+		break;
+
+	case 2:
+		std::cout << "Enter New First Name : ";
+		std::cin >> fName;
+		upperCase(fName);
+
+		break;
+
+	case 3:
+		std::cout << "Enter New Second Name : ";
+		std::cin >> sName;
+		upperCase(sName);
+
+		break;
+
+	case 4:
+		std::cout << "Enter New Last Name : ";
+		std::cin >> lName;
+		upperCase(lName);
+		break;
+
+	case 5:
+		std::cout << "Enter New Account Type : ";
+		std::cin >> type;
+		break;
+
+	default:
+		break;
+	}
+}
+
+
+
+
+
+
 
 
 int main() {
@@ -106,42 +236,47 @@ int main() {
 		system("cls");
 		switch (choice)
 		{
-		case 1:
+		case 1: //DONE
 			write_account(ac);
 			break;
 
-		case 2:
+		case 2: //DONE
 			std::cout << "Enter Account Number : ";
 			std::cin >> Account_Number;
 
 			deposite_darw(1, Account_Number);
 			break;
 
-		case 3:
+		case 3: //DONE
 			std::cout << "Enter Account Number : ";
 			std::cin >> Account_Number;
 			deposite_darw(2, Account_Number);
 			break;
 
-		case 4:
+		case 4: //DONE
 			std::cout << "Enter Account Number: ";
 			std::cin >> Account_Number;
 			display(Account_Number);
 			break;
 
-		case 5:
+		case 5: //DONE
+			ac.print_all_accounts();
 			break;
 
-		case 6:
+		case 6: //DONE
 			std::cout << "Enter Account Number : ";
 			std::cin >> Account_Number;
 			delete_account(Account_Number);
 			break;
 
 		case 7:
+			std::cout << "Enter Account Number : ";
+			std::cin >> Account_Number;
+			modify_account(Account_Number);
 			break;
 
 		case 8:
+			return 0;
 			break;
 
 		default:
@@ -171,7 +306,7 @@ void write_account(Account ac) {
 
 
 //***************************************************************
-//              FUCNTION TO PRESENT THE BANK SEVIES  
+//          FUCNTION TO PRESENT THE BANK SERVIES  
 //***************************************************************
 
 
@@ -224,8 +359,9 @@ void display(int Account_Number) {
 //***************************************************************
 
 
-// restrict users to enter only letters 
 void checkName(std::string& name, int accountNumber, std::string order) {
+
+	// restrict users to enter only letters 
 	while (true)
 	{
 
@@ -263,12 +399,11 @@ void checkName(std::string& name, int accountNumber, std::string order) {
 }
 
 
+
+
 //***************************************************************
 //        FUCNTION TO CHECK THE ACCOUNT NUMBER
 //***************************************************************
-
-
-
 
 // restrict users to enter only integer data type and integer length is 9 digits only
 void check_ID(int& accountNumber) {
@@ -310,7 +445,7 @@ void check_ID(int& accountNumber) {
 //***************************************************************
 
 void Account::show_account() const {
-	system("cls");
+	//system("cls");
 	std::cout << "\n Account Number : " << accountNumber << std::endl;
 	std::cout << " Account Name : " << fName << " " << sName[0] << "." << lName << std::endl;
 	std::cout << " Account Type : " << type << std::endl;
@@ -349,7 +484,7 @@ void deposite_darw(int option, int Account_Number) {
 		display(Account_Number);
 		if (checker == true) {
 			checker = false;
-			std::cout << "\nEnter Deposite Amount : ";
+			std::cout << "\nEnter Draw Amount : ";
 			std::cin >> draw;
 			ac.updateAccount(draw, Account_Number, 2);
 
@@ -361,6 +496,29 @@ void deposite_darw(int option, int Account_Number) {
 		break;
 	}
 }
+
+
+
+//***************************************************************
+//         FUCNTION TO PRINT ALL REGISTERD ACCOUNTS
+//***************************************************************
+//void print_accounts() {
+//	Account ac;
+//	std::ifstream Read_Accounts("account.txt", std::ios::in);
+//	ac.print_all_accounts();
+//}
+
+void Account::print_all_accounts() {
+	std::ifstream Read_Accounts("account.txt", std::ios::in);
+	while (Read_Accounts >> accountNumber >> fName >> sName >> lName >> type >> balance)
+	{
+		show_account();
+	}
+}
+
+//***************************************************************
+//             FUCNTION TO DELETE ACCOUNT.
+//***************************************************************
 
 void delete_account(int Account_Number) {
 	Account ac;
@@ -374,88 +532,31 @@ void delete_account(int Account_Number) {
 	}
 }
 
-void Account::depo(int deposite) {
-	balance += deposite;
-	std::cout << "Your New balance is " << balance << std::endl;
-	std::cout << "\n\nEnter -> Main Menu" << std::endl;
+//***************************************************************
+//             FUCNTION TO MODIFY ACCOUNT.
+//***************************************************************
+void modify_account(int Account_Number) {
+	Account ac;
 
-}
+	system("cls");
+	display(Account_Number);
+	if (checker == true) {
+		checker = false;
+		ac.updateAccount(0, Account_Number, 4);
 
-void Account::draw(int draw) {
-	balance -= draw;
-	std::cout << "Your New balance is " << balance << std::endl;
-	std::cout << "\n\nEnter -> Main Menu" << std::endl;
-
-}
-
-int Account::remove_account() {
-	return accountNumber;
-
-}
-
-
-
-void Account::updateAccount(int operation, int Account_Number, int Case) {
-	std::fstream inFile;
-	std::fstream outFile;
-	bool fileStatues = true;
-	char decision = 'Y';
-	inFile.open("account.txt", std::ios::in);
-	outFile.open("newAccount.txt", std::ios::out);
-	if (!inFile.is_open() || !outFile.is_open())
-	{
-		std::cout << "File Couldn't Be Open , Please Check File Status" << std::endl;
-
-		fileStatues = false;
 	}
-	if (fileStatues)
+}
+
+
+//***************************************************************
+//           FUCNTION TO CONVER NAMES TO UPPER CASE.
+//***************************************************************
+
+std::string upperCase(std::string& name) {
+	for (int i = 0; i < name.size(); i++)
 	{
-		while (inFile >> accountNumber >> fName >> sName >> lName >> type >> balance)
-		{
-			if (accountNumber == Account_Number) {
-				switch (Case)
-				{
-				case 1:
-					depo(operation);
-					break;
-				case 2:
-					draw(operation);
-					break;
-				case 3:
-					std::cout << " \n\n Are You sure You Want To Close Your Account?(y/n) :  ";
-					std::cin >> decision;
-					decision = tolower(decision);
-					if (decision == 'y') {
-						std::cout << "\n\nAccount " << remove_account() << " Has Been Deleted..." << std::endl;
-						continue;
-					}
-					else {
-						std::cout << "\n\n Operation Canceled..." << std::endl;
-						std::cout << "\n\n Enter-> Main Menu..." << std::endl;
-						break;
-					}
-
-					break;
-
-				default:
-					break;
-				}
-			}
-
-			outFile << accountNumber << " " << fName << " " << sName << " " << lName << " " << type << " " << balance << std::endl;
-
-		}
-		inFile.close();
-		outFile.close();
-		outFile.open("newAccount.txt", std::ios::in);
-		inFile.open("account.txt", std::ios::out);
-		while (outFile >> accountNumber >> fName >> sName >> lName >> type >> balance)
-		{
-			inFile << accountNumber << " " << fName << " " << sName << " " << lName << " " << type << " " << balance << std::endl;
-		}
+		name[i] = toupper(name[i]);
 	}
-
-	inFile.close();
-	outFile.close();
+	return name;
 
 }
