@@ -25,7 +25,7 @@ private:
 
 public:
 	friend void write_account(Account);
-	friend void display(int Account_Number);
+	friend void display(int);
 	void create_account();
 	void show_account() const;
 	void updateAccount(int, int, int);
@@ -33,8 +33,9 @@ public:
 	void draw(int);
 	void print_all_accounts();
 	void adjust(int);
+	bool Unique(int);
 
-}; // CLASS ENDS HERE
+}; //END OF ACCOUNT CLASS 
 
 bool checker = false;
 const int alpSize = 27;
@@ -56,6 +57,7 @@ void print_accounts();
 void modify_account(int);
 //std::string tempString(std::string);
 char check_type(char);
+bool match(int);
 
 
 
@@ -383,8 +385,6 @@ void write_account(Account ac) {
 //***************************************************************
 //          FUCNTION TO PRESENT THE BANK SERVIES  
 //***************************************************************
-
-
 void mainMenu() {
 	system("cls");
 	std::cout << "\n\n\n\tMAIN MENU";
@@ -396,7 +396,7 @@ void mainMenu() {
 	std::cout << "\n\n\t06. CLOSE AN ACCOUNT";
 	std::cout << "\n\n\t07. MODIFY AN ACCOUNT";
 	std::cout << "\n\n\t08. EXIT";
-	std::cout << "\n\n\tSelect Your Option (1-8) ";
+	std::cout << "\n\n\tSelect Your Option <1-8> ";
 }
 
 
@@ -483,7 +483,6 @@ void checkName(std::string& name, int accountNumber, std::string order) {
 int check_ID(int accountNumber) {
 	while (true)
 	{
-
 		std::cin >> accountNumber;
 		std::stringstream ss;
 		ss << accountNumber;
@@ -505,6 +504,10 @@ int check_ID(int accountNumber) {
 			system("cls");
 			std::cout << "Invaild input,Please Enter 9 digits" << std::endl;
 			std::cout << "Enter Account Number :  ";
+			continue;
+		}
+		else if (match(accountNumber)) {
+			std::cout << "You can't choose this number, Please choose anouther number : ";
 			continue;
 		}
 
@@ -647,7 +650,23 @@ char check_type(char type) {
 	return type;
 }
 
+bool match(int Account_Number) {
+	Account ac;
+	return ac.Unique(Account_Number);
+}
 
+bool Account::Unique(int Account_Number) {
+	std::ifstream Records("account.txt", std::ios::in);
+	while (Records >> accountNumber >> fName >> sName >> tName >> lName >> type >> balance) {
+		if (accountNumber == Account_Number) {
+			Records.close();
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+}
 
 
 //std::string tempString(std::string xName) {
