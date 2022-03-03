@@ -5,9 +5,9 @@
 #include<iostream>
 #include<fstream>
 #include<string>
-#include<sstream>  
-#include<cctype>  
-#include<cstring>  
+#include<sstream>
+#include<cctype>
+#include<cstring>
 
 //***************************************************************
 //                   CLASS USED IN PROJECT
@@ -18,6 +18,7 @@ private:
 	int accountNumber;
 	std::string fName;
 	std::string sName;
+	std::string tName;
 	std::string lName;
 	int balance;
 	char type;
@@ -53,7 +54,7 @@ void deposite_darw(int, int);
 void delete_account(int);
 void print_accounts();
 void modify_account(int);
-std::string tempString(std::string);
+//std::string tempString(std::string);
 char check_type(char);
 
 
@@ -73,15 +74,15 @@ void Account::create_account() {
 	checkName(fName, accountNumber, "First");
 	std::cout << "Enter The Second Name : ";
 	checkName(sName, accountNumber, "Second");
+	std::cout << "Enter The Third Name : ";
+	checkName(tName, accountNumber, "Third");
 	std::cout << "Enter The Last Name : ";
 	checkName(lName, accountNumber, "Last");
 
-	std::cout << "Enter the account Type : ";
+	std::cout << "Enter the account Type (C/S) : ";
 	std::cin >> type;
 	type = toupper(type);
-	//std::cout << type << std::endl;
 	type = check_type(type);
-	std::cout << type << std::endl;
 	std::cout << "Enter the initial deposite amount : ";
 	std::cin >> balance;
 	std::cout << "\n\nAccount Created ...";
@@ -90,6 +91,7 @@ void Account::create_account() {
 
 
 void Account::depo(int deposite) {
+
 	balance += deposite;
 	std::cout << "Your New balance is " << balance << std::endl;
 	std::cout << "\n\nEnter -> Main Menu" << std::endl;
@@ -97,8 +99,14 @@ void Account::depo(int deposite) {
 }
 
 void Account::draw(int draw) {
-	balance -= draw;
-	std::cout << "Your New balance is " << balance << std::endl;
+	if (balance - draw < 0) {
+		std::cout << "Insufficient Balance" << std::endl;
+	}
+	else {
+		balance -= draw;
+		std::cout << "Your New balance is " << balance << std::endl;
+	}
+
 	std::cout << "\n\nEnter -> Main Menu" << std::endl;
 
 }
@@ -121,7 +129,7 @@ void Account::updateAccount(int operation, int Account_Number, int Case) {
 	}
 	if (fileStatues)
 	{
-		while (inFile >> accountNumber >> fName >> sName >> lName >> type >> balance)
+		while (inFile >> accountNumber >> fName >> sName >> tName >> lName >> type >> balance)
 		{
 			if (accountNumber == Account_Number) {
 				switch (Case)
@@ -156,16 +164,16 @@ void Account::updateAccount(int operation, int Account_Number, int Case) {
 				}
 			}
 
-			outFile << accountNumber << " " << fName << " " << sName << " " << lName << " " << type << " " << balance << std::endl;
+			outFile << accountNumber << " " << fName << " " << sName << " " << tName << " " << lName << " " << type << " " << balance << std::endl;
 
 		}
 		inFile.close();
 		outFile.close();
 		outFile.open("newAccount.txt", std::ios::in);
 		inFile.open("account.txt", std::ios::out);
-		while (outFile >> accountNumber >> fName >> sName >> lName >> type >> balance)
+		while (outFile >> accountNumber >> fName >> sName >> tName >> lName >> type >> balance)
 		{
-			inFile << accountNumber << " " << fName << " " << sName << " " << lName << " " << type << " " << balance << std::endl;
+			inFile << accountNumber << " " << fName << " " << sName << " " << tName << " " << lName << " " << type << " " << balance << std::endl;
 		}
 	}
 
@@ -184,9 +192,10 @@ void Account::adjust(int account_Number) {
 	std::cout << "1. Account Number" << std::endl;
 	std::cout << "2. First Name" << std::endl;
 	std::cout << "3. Second Name" << std::endl;
-	std::cout << "4. Last Name" << std::endl;
-	std::cout << "5. Account Type" << std::endl;
-	std::cout << "What Info You want to change? " << std::endl;
+	std::cout << "4. Third Name" << std::endl;
+	std::cout << "5. Last Name" << std::endl;
+	std::cout << "6. Account Type" << std::endl;
+	std::cout << "What Info You Want to change? : ";
 	std::cin >> change;
 	switch (change)
 	{
@@ -216,7 +225,9 @@ void Account::adjust(int account_Number) {
 
 	case 3:
 		std::cout << "Enter New Second Name : ";
-		temName = tempString(sName);
+		temName = sName;
+
+		//temName = tempString(sName);
 		checkName(sName, account_Number, "Second");
 		std::cout << "Are You sure You Want to change The Second Name from " << temName << " To " << sName << " ? (Press y If you are Agree) : ";
 		std::cin >> agree;
@@ -232,8 +243,30 @@ void Account::adjust(int account_Number) {
 		break;
 
 	case 4:
+		std::cout << "Enter New Third Name : ";
+		temName = tName;
+
+		//temName = tempString(tName);
+		checkName(tName, account_Number, "Third");
+		std::cout << "Are You sure You Want to change The Third Name from " << temName << " To " << tName << " ? (Press y If you are Agree) : ";
+		std::cin >> agree;
+		upperCase(agree);
+		if (agree == "Y") {
+			std::cout << "Last Name has been changed..." << std::endl;
+		}
+		else {
+			tName = temName;
+			std::cout << "Operation Canceled..." << std::endl;
+		}
+
+		break;
+
+	case 5:
 		std::cout << "Enter New Last Name : ";
-		temName = tempString(lName);
+		temName = lName;
+
+
+		//temName = tempString(lName);
 
 		checkName(lName, account_Number, "Last");
 		std::cout << "Are You sure You Want to change The Last Name from " << temName << " To " << lName << " ? (Press y If you are Agree) : ";
@@ -249,7 +282,7 @@ void Account::adjust(int account_Number) {
 
 		break;
 
-	case 5:
+	case 6:
 		std::cout << "Enter New Account Type : ";
 		std::cin >> type;
 		break;
@@ -341,7 +374,7 @@ int main() {
 void write_account(Account ac) {
 	std::ofstream outFile("account.txt", std::ios::app);
 	ac.create_account();
-	outFile << ac.accountNumber << " " << ac.fName << " " << ac.sName << " " << ac.lName << " " << ac.type << " " << ac.balance << std::endl;
+	outFile << ac.accountNumber << " " << ac.fName << " " << ac.sName << " " << ac.tName << " " << ac.lName << " " << ac.type << " " << ac.balance << std::endl;
 	outFile.close();
 }
 
@@ -378,7 +411,7 @@ void display(int Account_Number) {
 		std::cout << "File Couldn't Be Open .. Press Any Key" << std::endl;
 	}
 
-	while (displayObject >> ac.accountNumber >> ac.fName >> ac.sName >> ac.lName >> ac.type >> ac.balance) {
+	while (displayObject >> ac.accountNumber >> ac.fName >> ac.sName >> ac.tName >> ac.lName >> ac.type >> ac.balance) {
 		if (Account_Number == ac.accountNumber) {
 			checker = true;
 			ac.show_account();
@@ -489,10 +522,10 @@ int check_ID(int accountNumber) {
 void Account::show_account() const {
 	//system("cls");
 	std::cout << "\n Account Number : " << accountNumber << std::endl;
-	std::cout << " Account Name : " << fName << " " << sName[0] << "." << lName << std::endl;
+	std::cout << " Account Name : " << fName << " " << sName << " " << tName << " " << lName << std::endl;
 	std::cout << " Account Type : " << type << std::endl;
 	std::cout << " Account Balance : " << balance << std::endl;
-	//std::cout << "\nPress Enter Key ..." << std::endl;
+
 
 }
 
@@ -544,18 +577,16 @@ void deposite_darw(int option, int Account_Number) {
 //***************************************************************
 //         FUCNTION TO PRINT ALL REGISTERD ACCOUNTS
 //***************************************************************
-//void print_accounts() {
-//	Account ac;
-//	std::ifstream Read_Accounts("account.txt", std::ios::in);
-//	ac.print_all_accounts();
-//}
+
 
 void Account::print_all_accounts() {
 	std::ifstream Read_Accounts("account.txt", std::ios::in);
-	while (Read_Accounts >> accountNumber >> fName >> sName >> lName >> type >> balance)
+	while (Read_Accounts >> accountNumber >> fName >> sName >> tName >> lName >> type >> balance)
 	{
 		show_account();
 	}
+	std::cout << "\n\nEnter -> Main Menu...";
+
 }
 
 //***************************************************************
@@ -602,23 +633,37 @@ std::string upperCase(std::string& name) {
 	return name;
 
 }
-std::string tempString(std::string xName) {
-	char tempName[20] = "";
-	for (int i = 0; i < xName.size() + 1; i++)
-	{
-		tempName[i] = xName[i];
-	}
-	return tempName;
-}
+
+//***************************************************************
+//           FUCNTION TO CHECK THE ACCOUNT TYPE
+//***************************************************************
 
 char check_type(char type) {
 	while (type != 'C' && type != 'S') {
-		std::cout << "Please choose S type or C type" << std::endl;
+		std::cout << "Please choose S type or C type : ";
 		std::cin >> type;
 		type = toupper(type);
 	}
 	return type;
 }
+
+
+
+
+//std::string tempString(std::string xName) {
+//	char tempName[20] = "";
+//	for (int i = 0; i < xName.size() + 1; i++)
+//	{
+//		tempName[i] = xName[i];
+//	}
+//	return tempName;
+//}
+
+//void print_accounts() {
+//	Account ac;
+//	std::ifstream Read_Accounts("account.txt", std::ios::in);
+//	ac.print_all_accounts();
+//}
 
 // check if tempString need to be deleted
 // initilize variables 
