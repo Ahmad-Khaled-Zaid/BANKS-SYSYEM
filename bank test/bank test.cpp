@@ -656,7 +656,8 @@ bool match(int Account_Number) {
 }
 
 bool Account::Unique(int Account_Number) {
-	std::ifstream Records("account.txt", std::ios::in);
+	std::ifstream Records;
+	Records.open("account.txt", std::ios::in);
 	while (Records >> accountNumber >> fName >> sName >> tName >> lName >> type >> balance) {
 		if (accountNumber == Account_Number) {
 			Records.close();
