@@ -7,6 +7,7 @@
 #include<string>
 #include<sstream>  
 #include<cctype>  
+#include<cstring>  
 
 //***************************************************************
 //                   CLASS USED IN PROJECT
@@ -52,6 +53,7 @@ void deposite_darw(int, int);
 void delete_account(int);
 void print_accounts();
 void modify_account(int);
+std::string tempString(std::string);
 
 
 
@@ -175,6 +177,9 @@ void Account::updateAccount(int operation, int Account_Number, int Case) {
 void Account::adjust(int account_Number) {
 	int change = 0;
 	int number = 0;
+	std::string agree = "y";
+	std::string temName;
+
 	std::cout << "1. Account Number" << std::endl;
 	std::cout << "2. First Name" << std::endl;
 	std::cout << "3. Second Name" << std::endl;
@@ -186,29 +191,61 @@ void Account::adjust(int account_Number) {
 	{
 	case 1:
 		std::cout << "Enter New Account Number : ";
-
 		accountNumber = check_ID(account_Number);
 		std::cout << "Your Account Number Has Been Changed" << std::endl;
 		break;
 
 	case 2:
-		std::cout << "Enter New First Name : ";
-		std::cin >> fName;
-		upperCase(fName);
 
+		std::cout << "Enter New First Name : ";
+		temName = tempString(fName);
+		checkName(fName, account_Number, "First");
+		std::cout << "Are You sure You Want to change The First Name from " << temName << " To " << fName << " ? (Press y If you are Agree) : ";
+		std::cin >> agree;
+		upperCase(agree);
+		if (agree == "Y") {
+			std::cout << "First Name has been changed..." << std::endl;
+		}
+		else {
+			fName = temName;
+			std::cout << "Operation Canceled..." << std::endl;
+		}
 		break;
+
 
 	case 3:
 		std::cout << "Enter New Second Name : ";
-		std::cin >> sName;
-		upperCase(sName);
+		temName = tempString(sName);
+		checkName(sName, account_Number, "Second");
+		std::cout << "Are You sure You Want to change The Second Name from " << temName << " To " << sName << " ? (Press y If you are Agree) : ";
+		std::cin >> agree;
+		upperCase(agree);
+		if (agree == "Y") {
+			std::cout << "Second Name has been changed..." << std::endl;
+		}
+		else {
+			sName = temName;
+			std::cout << "Operation Canceled..." << std::endl;
+		}
 
 		break;
 
 	case 4:
 		std::cout << "Enter New Last Name : ";
-		std::cin >> lName;
-		upperCase(lName);
+		temName = tempString(lName);
+
+		checkName(lName, account_Number, "Last");
+		std::cout << "Are You sure You Want to change The Last Name from " << temName << " To " << lName << " ? (Press y If you are Agree) : ";
+		std::cin >> agree;
+		upperCase(agree);
+		if (agree == "Y") {
+			std::cout << "Last Name has been changed..." << std::endl;
+		}
+		else {
+			lName = temName;
+			std::cout << "Operation Canceled..." << std::endl;
+		}
+
 		break;
 
 	case 5:
@@ -564,4 +601,12 @@ std::string upperCase(std::string& name) {
 	}
 	return name;
 
+}
+std::string tempString(std::string xName) {
+	char tempName[20];
+	for (int i = 0; i < xName.size() + 1; i++)
+	{
+		tempName[i] = xName[i];
+	}
+	return tempName;
 }
