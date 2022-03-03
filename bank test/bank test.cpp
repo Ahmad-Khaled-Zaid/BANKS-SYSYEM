@@ -54,6 +54,7 @@ void delete_account(int);
 void print_accounts();
 void modify_account(int);
 std::string tempString(std::string);
+char check_type(char);
 
 
 
@@ -63,10 +64,7 @@ std::string tempString(std::string);
 void Account::create_account() {
 	int number = 0;
 	std::cout << "Enter Account Number (9 digits) : ";
-	//std::cin >> number;
-	//accountNumber = check_ID(number);
 	accountNumber = check_ID(number);
-	//std::cout << number << std::endl;
 	system("cls");
 	std::cout << "Account ID : " << accountNumber << std::endl;
 	std::cout << "Enter The name of the account holder " << std::endl;
@@ -81,7 +79,10 @@ void Account::create_account() {
 	std::cout << "Enter the account Type : ";
 	std::cin >> type;
 	type = toupper(type);
-	std::cout << "Enter the initial deposite amount" << std::endl;
+	//std::cout << type << std::endl;
+	type = check_type(type);
+	std::cout << type << std::endl;
+	std::cout << "Enter the initial deposite amount : ";
 	std::cin >> balance;
 	std::cout << "\n\nAccount Created ...";
 
@@ -196,9 +197,9 @@ void Account::adjust(int account_Number) {
 		break;
 
 	case 2:
-
+		temName = fName;
 		std::cout << "Enter New First Name : ";
-		temName = tempString(fName);
+		//temName = tempString(fName);
 		checkName(fName, account_Number, "First");
 		std::cout << "Are You sure You Want to change The First Name from " << temName << " To " << fName << " ? (Press y If you are Agree) : ";
 		std::cin >> agree;
@@ -426,7 +427,6 @@ void checkName(std::string& name, int accountNumber, std::string order) {
 					break;
 				}
 
-
 				else  continue;
 
 
@@ -603,10 +603,23 @@ std::string upperCase(std::string& name) {
 
 }
 std::string tempString(std::string xName) {
-	char tempName[20];
+	char tempName[20] = "";
 	for (int i = 0; i < xName.size() + 1; i++)
 	{
 		tempName[i] = xName[i];
 	}
 	return tempName;
 }
+
+char check_type(char type) {
+	while (type != 'C' && type != 'S') {
+		std::cout << "Please choose S type or C type" << std::endl;
+		std::cin >> type;
+		type = toupper(type);
+	}
+	return type;
+}
+
+// check if tempString need to be deleted
+// initilize variables 
+// check if print need to be deleted
