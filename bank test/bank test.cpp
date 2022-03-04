@@ -22,6 +22,7 @@ private:
 	std::string lName;
 	int balance;
 	char type;
+	int accounts_counter = 0;
 
 public:
 	friend void write_account(Account);
@@ -34,6 +35,7 @@ public:
 	void print_all_accounts();
 	void adjust(int);
 	bool Unique(int);
+	int counter();
 
 }; //END OF ACCOUNT CLASS 
 
@@ -53,11 +55,11 @@ void mainMenu();
 void display(int);
 void deposite_darw(int, int);
 void delete_account(int);
-void print_accounts();
+//void print_accounts();
 void modify_account(int);
 //std::string tempString(std::string);
 char check_type(char);
-bool match(int);
+//bool match(int);
 
 
 
@@ -65,10 +67,13 @@ bool match(int);
 //                  MEMBERS FUNCTIONS DEFENITIONS
 //***************************************************************
 void Account::create_account() {
+	counter();
 	int number = 0;
 	std::cout << "Enter Account Number (9 digits) : ";
 	accountNumber = check_ID(number);
 	system("cls");
+	std::cout << accounts_counter << std::endl;
+
 	std::cout << "Account ID : " << accountNumber << std::endl;
 	std::cout << "Enter The name of the account holder " << std::endl;
 
@@ -481,13 +486,15 @@ void checkName(std::string& name, int accountNumber, std::string order) {
 
 // restrict users to enter only integer data type and integer length is 9 digits only
 int check_ID(int accountNumber) {
+
 	while (true)
 	{
+
+		Account ac;
 		std::cin >> accountNumber;
 		std::stringstream ss;
 		ss << accountNumber;
 		ss >> converter;
-
 		if (!std::cin)
 		{
 
@@ -496,7 +503,6 @@ int check_ID(int accountNumber) {
 			std::cout << "Enter Account Number :  ";
 			std::cin.clear();
 			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
 			continue;
 		}
 
@@ -506,7 +512,7 @@ int check_ID(int accountNumber) {
 			std::cout << "Enter Account Number :  ";
 			continue;
 		}
-		else if (match(accountNumber)) {
+		else if (ac.Unique(accountNumber)) {
 			std::cout << "You can't choose this number, Please choose anouther number : ";
 			continue;
 		}
@@ -583,6 +589,8 @@ void deposite_darw(int option, int Account_Number) {
 
 
 void Account::print_all_accounts() {
+	std::cout << "Number Of Account registered is " << counter() << std::endl;
+
 	std::ifstream Read_Accounts("account.txt", std::ios::in);
 	while (Read_Accounts >> accountNumber >> fName >> sName >> tName >> lName >> type >> balance)
 	{
@@ -652,21 +660,46 @@ char check_type(char type) {
 
 bool match(int Account_Number) {
 	Account ac;
-	return ac.Unique(Account_Number);
+	return (ac.Unique(Account_Number));
+
 }
 
 bool Account::Unique(int Account_Number) {
+	counter();
+	int number = 0;
 	std::ifstream Records;
 	Records.open("account.txt", std::ios::in);
-	while (Records >> accountNumber >> fName >> sName >> tName >> lName >> type >> balance) {
-		if (accountNumber == Account_Number) {
-			Records.close();
-			return true;
-		}
-		else {
-			return false;
+	if (accounts_counter == 0) {
+		return false;
+	}
+	else {
+		while (Records >> accountNumber >> fName >> sName >> tName >> lName >> type >> balance) {
+			number++;
+			if (accountNumber == Account_Number) {
+				Records.close();
+				return true;
+			}
+
+			else {
+				if (number == accounts_counter) {
+					Records.close();
+					return false;
+				}
+
+			}
 		}
 	}
+
+}
+
+int Account::counter() {
+	accounts_counter = 0;
+	std::ifstream counterObject("account.txt", std::ios::in);
+	while (counterObject >> accountNumber >> fName >> sName >> tName >> lName >> type >> balance) {
+		accounts_counter++;
+	}
+	counterObject.close();
+	return accounts_counter;
 }
 
 
