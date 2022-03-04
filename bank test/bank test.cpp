@@ -59,7 +59,8 @@ void delete_account(int);
 void modify_account(int);
 //std::string tempString(std::string);
 char check_type(char);
-//bool match(int);
+bool match(int);
+int check_operations_input(int);
 
 
 
@@ -72,11 +73,8 @@ void Account::create_account() {
 	std::cout << "Enter Account Number (9 digits) : ";
 	accountNumber = check_ID(number);
 	system("cls");
-	std::cout << accounts_counter << std::endl;
-
 	std::cout << "Account ID : " << accountNumber << std::endl;
 	std::cout << "Enter The name of the account holder " << std::endl;
-
 	std::cout << "Enter The First Name: ";
 	checkName(fName, accountNumber, "First");
 	std::cout << "Enter The Second Name : ";
@@ -85,7 +83,6 @@ void Account::create_account() {
 	checkName(tName, accountNumber, "Third");
 	std::cout << "Enter The Last Name : ";
 	checkName(lName, accountNumber, "Last");
-
 	std::cout << "Enter the account Type (C/S) : ";
 	std::cin >> type;
 	type = toupper(type);
@@ -93,16 +90,13 @@ void Account::create_account() {
 	std::cout << "Enter the initial deposite amount : ";
 	std::cin >> balance;
 	std::cout << "\n\nAccount Created ...";
-
 }
 
 
 void Account::depo(int deposite) {
-
 	balance += deposite;
 	std::cout << "Your New balance is " << balance << std::endl;
 	std::cout << "\n\nEnter -> Main Menu" << std::endl;
-
 }
 
 void Account::draw(int draw) {
@@ -115,7 +109,6 @@ void Account::draw(int draw) {
 	}
 
 	std::cout << "\n\nEnter -> Main Menu" << std::endl;
-
 }
 
 
@@ -183,10 +176,8 @@ void Account::updateAccount(int operation, int Account_Number, int Case) {
 			inFile << accountNumber << " " << fName << " " << sName << " " << tName << " " << lName << " " << type << " " << balance << std::endl;
 		}
 	}
-
 	inFile.close();
 	outFile.close();
-
 }
 
 
@@ -195,7 +186,6 @@ void Account::adjust(int account_Number) {
 	int number = 0;
 	std::string agree = "y";
 	std::string temName;
-
 	std::cout << "1. Account Number" << std::endl;
 	std::cout << "2. First Name" << std::endl;
 	std::cout << "3. Second Name" << std::endl;
@@ -211,11 +201,9 @@ void Account::adjust(int account_Number) {
 		accountNumber = check_ID(account_Number);
 		std::cout << "Your Account Number Has Been Changed" << std::endl;
 		break;
-
 	case 2:
 		temName = fName;
 		std::cout << "Enter New First Name : ";
-		//temName = tempString(fName);
 		checkName(fName, account_Number, "First");
 		std::cout << "Are You sure You Want to change The First Name from " << temName << " To " << fName << " ? (Press y If you are Agree) : ";
 		std::cin >> agree;
@@ -228,13 +216,10 @@ void Account::adjust(int account_Number) {
 			std::cout << "Operation Canceled..." << std::endl;
 		}
 		break;
-
-
 	case 3:
 		std::cout << "Enter New Second Name : ";
 		temName = sName;
 
-		//temName = tempString(sName);
 		checkName(sName, account_Number, "Second");
 		std::cout << "Are You sure You Want to change The Second Name from " << temName << " To " << sName << " ? (Press y If you are Agree) : ";
 		std::cin >> agree;
@@ -246,14 +231,11 @@ void Account::adjust(int account_Number) {
 			sName = temName;
 			std::cout << "Operation Canceled..." << std::endl;
 		}
-
 		break;
-
 	case 4:
 		std::cout << "Enter New Third Name : ";
 		temName = tName;
 
-		//temName = tempString(tName);
 		checkName(tName, account_Number, "Third");
 		std::cout << "Are You sure You Want to change The Third Name from " << temName << " To " << tName << " ? (Press y If you are Agree) : ";
 		std::cin >> agree;
@@ -272,9 +254,6 @@ void Account::adjust(int account_Number) {
 		std::cout << "Enter New Last Name : ";
 		temName = lName;
 
-
-		//temName = tempString(lName);
-
 		checkName(lName, account_Number, "Last");
 		std::cout << "Are You sure You Want to change The Last Name from " << temName << " To " << lName << " ? (Press y If you are Agree) : ";
 		std::cin >> agree;
@@ -286,22 +265,53 @@ void Account::adjust(int account_Number) {
 			lName = temName;
 			std::cout << "Operation Canceled..." << std::endl;
 		}
-
 		break;
-
 	case 6:
 		std::cout << "Enter New Account Type : ";
 		std::cin >> type;
 		break;
-
 	default:
 		break;
 	}
 }
 
+bool Account::Unique(int Account_Number) {
+	counter();
+	int number = 0;
+	std::ifstream Records;
+	Records.open("account.txt", std::ios::in);
+	if (accounts_counter == 0) {
+		return false;
+	}
+	else {
+		while (Records >> accountNumber >> fName >> sName >> tName >> lName >> type >> balance) {
+			number++;
+			if (accountNumber == Account_Number) {
+				Records.close();
+				return true;
+			}
+			else {
+				if (number == accounts_counter) {
+					Records.close();
+					return false;
+				}
+
+			}
+		}
+	}
+
+}
 
 
-
+int Account::counter() {
+	accounts_counter = 0;
+	std::ifstream counterObject("account.txt", std::ios::in);
+	while (counterObject >> accountNumber >> fName >> sName >> tName >> lName >> type >> balance) {
+		accounts_counter++;
+	}
+	counterObject.close();
+	return accounts_counter;
+}
 
 
 
@@ -317,44 +327,39 @@ int main() {
 		system("cls");
 		switch (choice)
 		{
-		case 1: //DONE
+		case 1:
 			write_account(ac);
 			break;
 
-		case 2: //DONE
+		case 2:
 			std::cout << "Enter Account Number : ";
-			std::cin >> Account_Number;
+			//std::cin >> Account_Number;
 
-			deposite_darw(1, Account_Number);
+			deposite_darw(1, check_operations_input(Account_Number));
 			break;
 
-		case 3: //DONE
+		case 3:
 			std::cout << "Enter Account Number : ";
-			std::cin >> Account_Number;
-			deposite_darw(2, Account_Number);
+			deposite_darw(2, check_operations_input(Account_Number));
 			break;
 
-		case 4: //DONE
+		case 4:
 			std::cout << "Enter Account Number: ";
-			std::cin >> Account_Number;
-			display(Account_Number);
+			display(check_operations_input(Account_Number));
 			break;
 
-		case 5: //DONE
+		case 5:
 			ac.print_all_accounts();
 			break;
 
-		case 6: //DONE
+		case 6:
 			std::cout << "Enter Account Number : ";
-			std::cin >> Account_Number;
-			delete_account(Account_Number);
+			delete_account(check_operations_input(Account_Number));
 			break;
 
 		case 7:
 			std::cout << "Enter Account Number : ";
-			std::cin >> Account_Number;
-			//number = check_ID(Account_Number);
-			modify_account(Account_Number);
+			modify_account(check_operations_input(Account_Number));
 			break;
 
 		case 8:
@@ -421,6 +426,7 @@ void display(int Account_Number) {
 			checker = true;
 			ac.show_account();
 			displayObject.close();
+			break;
 		}
 	}
 
@@ -428,7 +434,6 @@ void display(int Account_Number) {
 		std::cout << "Account not found!..." << std::endl;
 
 	}
-
 }
 
 
@@ -490,7 +495,7 @@ int check_ID(int accountNumber) {
 	while (true)
 	{
 
-		Account ac;
+		//Account ac;
 		std::cin >> accountNumber;
 		std::stringstream ss;
 		ss << accountNumber;
@@ -512,7 +517,7 @@ int check_ID(int accountNumber) {
 			std::cout << "Enter Account Number :  ";
 			continue;
 		}
-		else if (ac.Unique(accountNumber)) {
+		else if (match(accountNumber)) {
 			std::cout << "You can't choose this number, Please choose anouther number : ";
 			continue;
 		}
@@ -530,6 +535,7 @@ int check_ID(int accountNumber) {
 
 void Account::show_account() const {
 	//system("cls");
+
 	std::cout << "\n Account Number : " << accountNumber << std::endl;
 	std::cout << " Account Name : " << fName << " " << sName << " " << tName << " " << lName << std::endl;
 	std::cout << " Account Type : " << type << std::endl;
@@ -600,6 +606,13 @@ void Account::print_all_accounts() {
 
 }
 
+
+void print_accounts() {
+	Account ac;
+	std::ifstream Read_Accounts("account.txt", std::ios::in);
+	ac.print_all_accounts();
+}
+
 //***************************************************************
 //             FUCNTION TO DELETE ACCOUNT.
 //***************************************************************
@@ -657,67 +670,31 @@ char check_type(char type) {
 	}
 	return type;
 }
-
+//***************************************************************
+//           FUCNTION TO REGISTERED ACCOUNTS
+//***************************************************************
 bool match(int Account_Number) {
 	Account ac;
-	return (ac.Unique(Account_Number));
+	return ac.Unique(Account_Number);
 
 }
+int check_operations_input(int Account_Number) {
+	while (true)
+	{
 
-bool Account::Unique(int Account_Number) {
-	counter();
-	int number = 0;
-	std::ifstream Records;
-	Records.open("account.txt", std::ios::in);
-	if (accounts_counter == 0) {
-		return false;
-	}
-	else {
-		while (Records >> accountNumber >> fName >> sName >> tName >> lName >> type >> balance) {
-			number++;
-			if (accountNumber == Account_Number) {
-				Records.close();
-				return true;
-			}
+		std::cin >> Account_Number;
 
-			else {
-				if (number == accounts_counter) {
-					Records.close();
-					return false;
-				}
+		if (!std::cin)
+		{
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			return 0;
+		}
 
-			}
+
+		else {
+			return Account_Number;
 		}
 	}
-
 }
 
-int Account::counter() {
-	accounts_counter = 0;
-	std::ifstream counterObject("account.txt", std::ios::in);
-	while (counterObject >> accountNumber >> fName >> sName >> tName >> lName >> type >> balance) {
-		accounts_counter++;
-	}
-	counterObject.close();
-	return accounts_counter;
-}
-
-
-//std::string tempString(std::string xName) {
-//	char tempName[20] = "";
-//	for (int i = 0; i < xName.size() + 1; i++)
-//	{
-//		tempName[i] = xName[i];
-//	}
-//	return tempName;
-//}
-
-//void print_accounts() {
-//	Account ac;
-//	std::ifstream Read_Accounts("account.txt", std::ios::in);
-//	ac.print_all_accounts();
-//}
-
-// check if tempString need to be deleted
-// initilize variables 
-// check if print need to be deleted
