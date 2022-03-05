@@ -44,6 +44,10 @@ const int alpSize = 27;
 const int numbers = 11;
 std::string converter;
 char alphapet[alpSize] = { 'A','B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W','X','Y','Z' };
+std::string pass_word{};
+std::string numbersString = "0123456789";
+const int symboleSize = 35;
+char symbolesArray[symboleSize] = { '!','@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '`', '~', '[', ']', '{', '}', '\'','|','\\','"',':',';','/','?','>','<',',' ,'.' };
 
 
 
@@ -73,11 +77,10 @@ std::string password();
 void Account::create_account() {
 	counter();
 	int number = 0;
-	std::string pass_word{};
 	std::cout << "Enter Account Number (9 digits) : ";
 	accountNumber = check_ID(number);
 	std::cout << "Enter password : ";
-	password();
+	pass_word = password();
 	system("cls");
 	std::cout << "Account ID : " << accountNumber << std::endl;
 	std::cout << "Enter The name of the account holder " << std::endl;
@@ -387,12 +390,12 @@ int main() {
 
 //***************************************************************
 //              FUCNTION TO CREATE NEW ACCOUNT
-//***************************************************************
+//***************************************************************s
 
 void write_account(Account ac) {
 	std::ofstream outFile("account.txt", std::ios::app);
 	ac.create_account();
-	outFile << ac.accountNumber << " " << ac.fName << " " << ac.sName << " " << ac.tName << " " << ac.lName << " " << ac.type << " " << ac.balance << std::endl;
+	outFile << ac.accountNumber << " " << ac.fName << " " << ac.sName << " " << ac.tName << " " << ac.lName << " " << ac.type << " " << ac.balance << " " << pass_word << std::endl;
 	outFile.close();
 }
 
@@ -703,14 +706,14 @@ int check_operations_input(int Account_Number) {
 		}
 	}
 }
+//***************************************************************
+//                FUCNTION TO CREATE PASSWORD
+//***************************************************************
 std::string password() {
 	int symbolesCounter = 0;
 	int numbersCounter = 0;
 	int letterCounter = 0;
-	std::string numbers = "0123456789";
-	const int symboleSize = 35;
-	char symbolesArray[symboleSize] = { '!','@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '`', '~', '[', ']', '{', '}', '\'','|','\\','"',':',';','/','?','>','<',',' ,'.' };
-	//std::string symboles = "!@#$%^&*()-_=+[]{};:'\"'/?.>,<";
+	
 	std::string pass;
 	std::string pass2;
 	while (true) {
@@ -732,9 +735,9 @@ std::string password() {
 			}
 			for (int i = 0; i < pass.size(); i++)
 			{
-				for (int j = 0; j < numbers.size(); j++)
+				for (int j = 0; j < numbersString.size(); j++)
 				{
-					if (pass[i] == numbers[j]) {
+					if (pass[i] == numbersString[j]) {
 						numbersCounter++;
 						break;
 					}
@@ -760,10 +763,11 @@ std::string password() {
 
 		if (numbersCounter == 0 || symbolesCounter == 0 || letterCounter == 0) {
 			std::cout << "Password should contain at least one symbole,one CAPITAL letter, one number : ";
-			continue;
 			numbersCounter = 0;
 			symbolesCounter = 0;
 			letterCounter = 0;
+			continue;
+
 		}
 		std::cout << "Enter the password again : ";
 		std::cin >> pass2;
@@ -771,7 +775,7 @@ std::string password() {
 			return pass;
 		}
 		else {
-			std::cout << "password not matching \n Enter the password again : ";
+			std::cout << "passwords not matching \n Enter the password again : ";
 			continue;
 		}
 	}
