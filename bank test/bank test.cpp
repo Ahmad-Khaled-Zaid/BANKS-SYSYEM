@@ -41,8 +41,10 @@ public:
 
 bool checker = false;
 const int alpSize = 27;
+const int numbers = 11;
 std::string converter;
 char alphapet[alpSize] = { 'A','B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W','X','Y','Z' };
+
 
 
 //***************************************************************
@@ -61,6 +63,7 @@ void modify_account(int);
 char check_type(char);
 bool match(int);
 int check_operations_input(int);
+std::string password();
 
 
 
@@ -70,8 +73,11 @@ int check_operations_input(int);
 void Account::create_account() {
 	counter();
 	int number = 0;
+	std::string pass_word{};
 	std::cout << "Enter Account Number (9 digits) : ";
 	accountNumber = check_ID(number);
+	std::cout << "Enter password : ";
+	password();
 	system("cls");
 	std::cout << "Account ID : " << accountNumber << std::endl;
 	std::cout << "Enter The name of the account holder " << std::endl;
@@ -697,4 +703,78 @@ int check_operations_input(int Account_Number) {
 		}
 	}
 }
+std::string password() {
+	int symbolesCounter = 0;
+	int numbersCounter = 0;
+	int letterCounter = 0;
+	std::string numbers = "0123456789";
+	const int symboleSize = 35;
+	char symbolesArray[symboleSize] = { '!','@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '`', '~', '[', ']', '{', '}', '\'','|','\\','"',':',';','/','?','>','<',',' ,'.' };
+	//std::string symboles = "!@#$%^&*()-_=+[]{};:'\"'/?.>,<";
+	std::string pass;
+	std::string pass2;
+	while (true) {
+		std::cin >> pass;
+		if (pass.size() < 8) {
+			std::cout << "You Should Enter 8 characters at least" << std::endl;
+			continue;
+		}
+		else if (true) {
+			for (int i = 0; i < pass.size(); i++)
+			{
+				for (int j = 0; j < symboleSize; j++)
+				{
+					if (pass[i] == symbolesArray[j]) {
+						symbolesCounter++;
+						break;
+					}
+				}
+			}
+			for (int i = 0; i < pass.size(); i++)
+			{
+				for (int j = 0; j < numbers.size(); j++)
+				{
+					if (pass[i] == numbers[j]) {
+						numbersCounter++;
+						break;
+					}
+
+				}
+
+			}
+
+			for (int i = 0; i < pass.size(); i++)
+			{
+				for (int j = 0; j < alpSize; j++)
+				{
+					if (pass[i] == alphapet[j]) {
+						letterCounter++;
+						break;
+					}
+				}
+
+			}
+
+		}
+
+
+		if (numbersCounter == 0 || symbolesCounter == 0 || letterCounter == 0) {
+			std::cout << "Password should contain at least one symbole,one CAPITAL letter, one number : ";
+			continue;
+			numbersCounter = 0;
+			symbolesCounter = 0;
+			letterCounter = 0;
+		}
+		std::cout << "Enter the password again : ";
+		std::cin >> pass2;
+		if (pass == pass2) {
+			return pass;
+		}
+		else {
+			std::cout << "password not matching \n Enter the password again : ";
+			continue;
+		}
+	}
+}
+
 
