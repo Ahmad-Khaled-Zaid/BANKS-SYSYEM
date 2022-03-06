@@ -356,7 +356,6 @@ int main() {
 	do {
 		mainMenu();
 		std::cin >> choice;
-		check_ID(choice);
 		system("cls");
 		switch (choice)
 		{
@@ -644,7 +643,6 @@ void modify_account(int Account_Number) {
 	if (checker == true) {
 		checker = false;
 		ac.updateAccount(0, Account_Number, 4);
-
 	}
 }
 
