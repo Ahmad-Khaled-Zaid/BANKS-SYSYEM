@@ -35,14 +35,15 @@ public:
 	void print_all_accounts();
 	void adjust(int);
 	bool Unique(int);
-	int counter();
+	int count_accounts();
+	std::string pass_word{};
+
 
 }; //END OF ACCOUNT CLASS 
 
 bool checker = false;
 std::string converter;
 char alphapet[27] = { 'A','B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W','X','Y','Z' };
-std::string pass_word{};
 
 
 
@@ -57,6 +58,7 @@ void display(int);
 void deposite_darw(int, int);
 void delete_account(int);
 void modify_account(int);
+void print_accounts();
 char check_type(char);
 bool match(int);
 int check_operations_input(int);
@@ -65,53 +67,46 @@ bool _is_Number(std::string);
 bool _is_CAPITAL(std::string);
 bool _is_special(std::string);
 bool _is_small(std::string);
-
-
+void print_massege(int, std::string, std::string, std::string, std::string);
 
 //***************************************************************
 //                  MEMBERS FUNCTIONS DEFENITIONS
 //***************************************************************
 void Account::create_account() {
-	counter();
-	int number = 0;
 	std::cout << "Enter Account Number (9 digits) : ";
-	accountNumber = check_ID(number);
+	accountNumber = check_ID(accountNumber);
 	system("cls");
-	std::cout << "Account ID : " << accountNumber << std::endl;
-	std::cout << "Enter The name of the account holder " << std::endl;
+
+	print_massege(accountNumber, "", "", "", "");
 	std::cout << "Enter The First Name: ";
 	checkName(fName, accountNumber, "First");
 	system("cls");
-	std::cout << "Account ID : " << accountNumber << std::endl;
-	std::cout << "Name : " << fName << std::endl;
+	print_massege(accountNumber, fName, "", "", "");
+
 	std::cout << "Enter The Second Name : ";
 	checkName(sName, accountNumber, "Second");
 	system("cls");
-	std::cout << "Account ID : " << accountNumber << std::endl;
-	std::cout << "Name : " << fName << " " << sName << std::endl;
+	print_massege(accountNumber, fName, sName, "", "");
 	std::cout << "Enter The Third Name : ";
 	checkName(tName, accountNumber, "Third");
 	system("cls");
-	std::cout << "Account ID : " << accountNumber << std::endl;
-	std::cout << "Name : " << fName << " " << sName << " " << tName << std::endl;
+	print_massege(accountNumber, fName, sName, tName, "");
+
 	std::cout << "Enter The Last Name : ";
 	checkName(lName, accountNumber, "Last");
 	system("cls");
-	std::cout << "Account ID : " << accountNumber << std::endl;
-	std::cout << "Name : " << fName << " " << sName << " " << tName << " " << lName << std::endl;
+	print_massege(accountNumber, fName, sName, tName, lName);
 	std::cout << "Enter the account Type (C/S) : ";
 	std::cin >> type;
-	type = toupper(type);
-	type = check_type(type);
+	type = check_type(toupper(type));
 	system("cls");
-	std::cout << "Account ID : " << accountNumber << std::endl;
-	std::cout << "Name : " << fName << " " << sName << " " << tName << " " << lName << std::endl;
+	print_massege(accountNumber, fName, sName, tName, lName);
 	std::cout << "Account Type : " << type << std::endl;
+
 	std::cout << "Enter the initial deposite amount : ";
 	std::cin >> balance;
 	system("cls");
-	std::cout << "Account ID : " << accountNumber << std::endl;
-	std::cout << "Name : " << fName << " " << sName << " " << tName << " " << lName << std::endl;
+	print_massege(accountNumber, fName, sName, tName, lName);
 	std::cout << "Account Type : " << type << std::endl;
 	std::cout << "Account Balance : " << balance << std::endl;
 	std::cout << "Enter password : ";
@@ -156,7 +151,7 @@ void Account::updateAccount(int operation, int Account_Number, int Case) {
 	}
 	if (fileStatues)
 	{
-		while (inFile >> accountNumber >> fName >> sName >> tName >> lName >> type >> balance)
+		while (inFile >> accountNumber >> fName >> sName >> tName >> lName >> type >> balance >> pass_word)
 		{
 			if (accountNumber == Account_Number) {
 				switch (Case)
@@ -191,16 +186,16 @@ void Account::updateAccount(int operation, int Account_Number, int Case) {
 				}
 			}
 
-			outFile << accountNumber << " " << fName << " " << sName << " " << tName << " " << lName << " " << type << " " << balance << std::endl;
+			outFile << accountNumber << " " << fName << " " << sName << " " << tName << " " << lName << " " << type << " " << balance << " " << pass_word << std::endl;
 
 		}
 		inFile.close();
 		outFile.close();
 		outFile.open("newAccount.txt", std::ios::in);
 		inFile.open("account.txt", std::ios::out);
-		while (outFile >> accountNumber >> fName >> sName >> tName >> lName >> type >> balance)
+		while (outFile >> accountNumber >> fName >> sName >> tName >> lName >> type >> balance >> pass_word)
 		{
-			inFile << accountNumber << " " << fName << " " << sName << " " << tName << " " << lName << " " << type << " " << balance << std::endl;
+			inFile << accountNumber << " " << fName << " " << sName << " " << tName << " " << lName << " " << type << " " << balance << " " << pass_word << std::endl;
 		}
 	}
 	inFile.close();
@@ -302,8 +297,20 @@ void Account::adjust(int account_Number) {
 	}
 }
 
+void Account::print_all_accounts() {
+	std::cout << "Number Of Account registered is " << count_accounts() << std::endl;
+
+	std::ifstream Read_Accounts("account.txt", std::ios::in);
+	while (Read_Accounts >> accountNumber >> fName >> sName >> tName >> lName >> type >> balance >> pass_word)
+	{
+		show_account();
+	}
+	std::cout << "\n\nEnter -> Main Menu...";
+
+}
+
 bool Account::Unique(int Account_Number) {
-	counter();
+	count_accounts();
 	int number = 0;
 	std::ifstream Records;
 	Records.open("account.txt", std::ios::in);
@@ -311,7 +318,7 @@ bool Account::Unique(int Account_Number) {
 		return false;
 	}
 	else {
-		while (Records >> accountNumber >> fName >> sName >> tName >> lName >> type >> balance) {
+		while (Records >> accountNumber >> fName >> sName >> tName >> lName >> type >> balance >> pass_word) {
 			number++;
 			if (accountNumber == Account_Number) {
 				Records.close();
@@ -330,10 +337,10 @@ bool Account::Unique(int Account_Number) {
 }
 
 
-int Account::counter() {
+int Account::count_accounts() {
 	accounts_counter = 0;
 	std::ifstream counterObject("account.txt", std::ios::in);
-	while (counterObject >> accountNumber >> fName >> sName >> tName >> lName >> type >> balance) {
+	while (counterObject >> accountNumber >> fName >> sName >> tName >> lName >> type >> balance >> pass_word) {
 		accounts_counter++;
 	}
 	counterObject.close();
@@ -345,12 +352,11 @@ int Account::counter() {
 
 int main() {
 	Account ac;
-	int choice = 0;
-	int Account_Number = 0;
-	int number = 0;
+	int choice = 0, Account_Number = 0;
 	do {
 		mainMenu();
 		std::cin >> choice;
+		check_ID(choice);
 		system("cls");
 		switch (choice)
 		{
@@ -360,8 +366,6 @@ int main() {
 
 		case 2:
 			std::cout << "Enter Account Number : ";
-			//std::cin >> Account_Number;
-
 			deposite_darw(1, check_operations_input(Account_Number));
 			break;
 
@@ -376,7 +380,7 @@ int main() {
 			break;
 
 		case 5:
-			ac.print_all_accounts();
+			print_accounts();
 			break;
 
 		case 6:
@@ -390,10 +394,14 @@ int main() {
 			break;
 
 		case 8:
+			std::cout << "\n\n\n\n\n\n\n\n\t\t\tTHANK YOU FOR USE OUT SERVIES...PRESS ENTER TO CLOSE THE PROGRAM";
+			std::cin.get();
+			std::cin.ignore();
 			return 0;
 			break;
 
 		default:
+			std::cout << "choose options from 1 to 8...";
 			break;
 		}
 		std::cin.get();
@@ -413,7 +421,7 @@ int main() {
 void write_account(Account ac) {
 	std::ofstream outFile("account.txt", std::ios::app);
 	ac.create_account();
-	outFile << ac.accountNumber << " " << ac.fName << " " << ac.sName << " " << ac.tName << " " << ac.lName << " " << ac.type << " " << ac.balance << " " << pass_word << std::endl;
+	outFile << ac.accountNumber << " " << ac.fName << " " << ac.sName << " " << ac.tName << " " << ac.lName << " " << ac.type << " " << ac.balance << " " << ac.pass_word << std::endl;
 	outFile.close();
 }
 
@@ -448,7 +456,7 @@ void display(int Account_Number) {
 		std::cout << "File Couldn't Be Open .. Press Any Key" << std::endl;
 	}
 
-	while (displayObject >> ac.accountNumber >> ac.fName >> ac.sName >> ac.tName >> ac.lName >> ac.type >> ac.balance) {
+	while (displayObject >> ac.accountNumber >> ac.fName >> ac.sName >> ac.tName >> ac.lName >> ac.type >> ac.balance >> ac.pass_word) {
 		if (Account_Number == ac.accountNumber) {
 			checker = true;
 			ac.show_account();
@@ -470,44 +478,34 @@ void display(int Account_Number) {
 //        FUCNTION TO CHECK THE ACCOUNT HOLDER NAME  
 //***************************************************************
 
-
+	// restrict users to enter only letters 
 void checkName(std::string& name, int accountNumber, std::string order) {
 
-	// restrict users to enter only letters 
+	int counter = 0;
+	std::string letter_x;
+
 	while (true)
 	{
-
-		bool breaks = false;
 		std::cin >> name;
 		upperCase(name);
-
 		for (int i = 0; i < name.size(); i++)
 		{
-			for (int j = 0; j < 26; j++)
-			{
-				if (name[i] == alphapet[j])
-				{
-					break;
-				}
-				else if (name[i] != alphapet[j] && j == 26 - 1) {
-					system("cls");
-					breaks = true;
-					std::cout << "Account Number : " << accountNumber << std::endl;
-					std::cout << "Invalid Input , Please Enter The " << order << " Name : ";
-					break;
-				}
-
-				else  continue;
-
-
+			letter_x = name[i];
+			if (_is_CAPITAL(letter_x)) {
+				counter++;
 			}
-
-			if (breaks) break;
 		}
-		if (!breaks) break;
-
+		if (counter == name.size()) {
+			break;
+		}
+		else {
+			std::cout << "Invalid Input, Please Enter The " << order << " Name : ";
+		}
+		counter = 0;
 	}
+
 }
+
 
 
 
@@ -522,7 +520,6 @@ int check_ID(int accountNumber) {
 	while (true)
 	{
 
-		//Account ac;
 		std::cin >> accountNumber;
 		std::stringstream ss;
 		ss << accountNumber;
@@ -561,14 +558,10 @@ int check_ID(int accountNumber) {
 //***************************************************************
 
 void Account::show_account() const {
-	//system("cls");
-
 	std::cout << "\n Account Number : " << accountNumber << std::endl;
 	std::cout << " Account Name : " << fName << " " << sName << " " << tName << " " << lName << std::endl;
 	std::cout << " Account Type : " << type << std::endl;
 	std::cout << " Account Balance : " << balance << std::endl;
-
-
 }
 
 
@@ -604,7 +597,6 @@ void deposite_darw(int option, int Account_Number) {
 			std::cout << "\nEnter Draw Amount : ";
 			std::cin >> draw;
 			ac.updateAccount(draw, Account_Number, 2);
-
 		}
 
 		break;
@@ -615,24 +607,9 @@ void deposite_darw(int option, int Account_Number) {
 }
 
 
-
 //***************************************************************
 //         FUCNTION TO PRINT ALL REGISTERD ACCOUNTS
 //***************************************************************
-
-
-void Account::print_all_accounts() {
-	std::cout << "Number Of Account registered is " << counter() << std::endl;
-
-	std::ifstream Read_Accounts("account.txt", std::ios::in);
-	while (Read_Accounts >> accountNumber >> fName >> sName >> tName >> lName >> type >> balance)
-	{
-		show_account();
-	}
-	std::cout << "\n\nEnter -> Main Menu...";
-
-}
-
 
 void print_accounts() {
 	Account ac;
@@ -755,12 +732,15 @@ std::string password() {
 		}
 
 		else {
-			std::cout << "passwords not matching \nEnter the password : ";
+			std::cout << "passwords not matching \nEnter the password  : ";
 			continue;
 		}
 	}
 }
 
+//***************************************************************
+//              FUCNTION TO CHECK CAPITAL LETTERS
+//***************************************************************
 
 bool _is_CAPITAL(std::string pass) {
 	for (int i = 0; i < pass.size(); i++)
@@ -776,6 +756,9 @@ bool _is_CAPITAL(std::string pass) {
 	return false;
 }
 
+//***************************************************************
+//            FUCNTION TO CHECK SPECIAL CHARACTERS
+//***************************************************************
 bool _is_special(std::string pass) {
 
 	char symbolesArray[33] = { '!','@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '`', '~', '[', ']', '{', '}', '\'','|','\\','"',':',';','/','?','>','<',',' ,'.' };
@@ -792,6 +775,9 @@ bool _is_special(std::string pass) {
 
 }
 
+//***************************************************************
+//            FUCNTION TO CHECK INTEGER NUMBERS
+//***************************************************************
 bool _is_Number(std::string pass) {
 	std::string numbersString = "0123456789";
 
@@ -810,6 +796,9 @@ bool _is_Number(std::string pass) {
 
 }
 
+//***************************************************************
+//            FUCNTION TO CHECK SMALL LETTERS
+//***************************************************************
 bool _is_small(std::string pass) {
 	std::string smallLetterString = "abcdefghijklmnopqrstuvwxyz";
 
@@ -828,3 +817,11 @@ bool _is_small(std::string pass) {
 
 }
 
+
+//***************************************************************
+//            FUCNTION TO CHECK PRINT NAMES 
+//***************************************************************
+void print_massege(int accountNumber, std::string fName, std::string sName = "", std::string tName = "", std::string lName = "") {
+	std::cout << "Account ID : " << accountNumber << std::endl;
+	std::cout << "Name : " << fName << " " << sName << " " << tName << " " << lName << std::endl;
+}
