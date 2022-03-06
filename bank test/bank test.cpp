@@ -40,14 +40,9 @@ public:
 }; //END OF ACCOUNT CLASS 
 
 bool checker = false;
-const int alpSize = 27;
-const int numbers = 11;
 std::string converter;
-char alphapet[alpSize] = { 'A','B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W','X','Y','Z' };
+char alphapet[27] = { 'A','B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W','X','Y','Z' };
 std::string pass_word{};
-std::string numbersString = "0123456789";
-const int symboleSize = 35;
-char symbolesArray[symboleSize] = { '!','@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '`', '~', '[', ']', '{', '}', '\'','|','\\','"',':',';','/','?','>','<',',' ,'.' };
 
 
 
@@ -61,13 +56,15 @@ void mainMenu();
 void display(int);
 void deposite_darw(int, int);
 void delete_account(int);
-//void print_accounts();
 void modify_account(int);
-//std::string tempString(std::string);
 char check_type(char);
 bool match(int);
 int check_operations_input(int);
 std::string password();
+bool _is_Number(std::string);
+bool _is_CAPITAL(std::string);
+bool _is_special(std::string);
+bool _is_small(std::string);
 
 
 
@@ -79,25 +76,46 @@ void Account::create_account() {
 	int number = 0;
 	std::cout << "Enter Account Number (9 digits) : ";
 	accountNumber = check_ID(number);
-	std::cout << "Enter password : ";
-	pass_word = password();
 	system("cls");
 	std::cout << "Account ID : " << accountNumber << std::endl;
 	std::cout << "Enter The name of the account holder " << std::endl;
 	std::cout << "Enter The First Name: ";
 	checkName(fName, accountNumber, "First");
+	system("cls");
+	std::cout << "Account ID : " << accountNumber << std::endl;
+	std::cout << "Name : " << fName << std::endl;
 	std::cout << "Enter The Second Name : ";
 	checkName(sName, accountNumber, "Second");
+	system("cls");
+	std::cout << "Account ID : " << accountNumber << std::endl;
+	std::cout << "Name : " << fName << " " << sName << std::endl;
 	std::cout << "Enter The Third Name : ";
 	checkName(tName, accountNumber, "Third");
+	system("cls");
+	std::cout << "Account ID : " << accountNumber << std::endl;
+	std::cout << "Name : " << fName << " " << sName << " " << tName << std::endl;
 	std::cout << "Enter The Last Name : ";
 	checkName(lName, accountNumber, "Last");
+	system("cls");
+	std::cout << "Account ID : " << accountNumber << std::endl;
+	std::cout << "Name : " << fName << " " << sName << " " << tName << " " << lName << std::endl;
 	std::cout << "Enter the account Type (C/S) : ";
 	std::cin >> type;
 	type = toupper(type);
 	type = check_type(type);
+	system("cls");
+	std::cout << "Account ID : " << accountNumber << std::endl;
+	std::cout << "Name : " << fName << " " << sName << " " << tName << " " << lName << std::endl;
+	std::cout << "Account Type : " << type << std::endl;
 	std::cout << "Enter the initial deposite amount : ";
 	std::cin >> balance;
+	system("cls");
+	std::cout << "Account ID : " << accountNumber << std::endl;
+	std::cout << "Name : " << fName << " " << sName << " " << tName << " " << lName << std::endl;
+	std::cout << "Account Type : " << type << std::endl;
+	std::cout << "Account Balance : " << balance << std::endl;
+	std::cout << "Enter password : ";
+	pass_word = password();
 	std::cout << "\n\nAccount Created ...";
 }
 
@@ -465,13 +483,13 @@ void checkName(std::string& name, int accountNumber, std::string order) {
 
 		for (int i = 0; i < name.size(); i++)
 		{
-			for (int j = 0; j < alpSize; j++)
+			for (int j = 0; j < 26; j++)
 			{
 				if (name[i] == alphapet[j])
 				{
 					break;
 				}
-				else if (name[i] != alphapet[j] && j == alpSize - 1) {
+				else if (name[i] != alphapet[j] && j == 26 - 1) {
 					system("cls");
 					breaks = true;
 					std::cout << "Account Number : " << accountNumber << std::endl;
@@ -687,6 +705,10 @@ bool match(int Account_Number) {
 	return ac.Unique(Account_Number);
 
 }
+
+//***************************************************************
+//          FUCNTION TO CHECK THE INPUT TYPE 
+//***************************************************************
 int check_operations_input(int Account_Number) {
 	while (true)
 	{
@@ -706,79 +728,103 @@ int check_operations_input(int Account_Number) {
 		}
 	}
 }
+
 //***************************************************************
 //                FUCNTION TO CREATE PASSWORD
 //***************************************************************
+
 std::string password() {
-	int symbolesCounter = 0;
-	int numbersCounter = 0;
-	int letterCounter = 0;
-	
 	std::string pass;
 	std::string pass2;
 	while (true) {
 		std::cin >> pass;
 		if (pass.size() < 8) {
-			std::cout << "You Should Enter 8 characters at least" << std::endl;
+			std::cout << "You Should Enter 8 characters at least : ";;
 			continue;
 		}
-		else if (true) {
-			for (int i = 0; i < pass.size(); i++)
-			{
-				for (int j = 0; j < symboleSize; j++)
-				{
-					if (pass[i] == symbolesArray[j]) {
-						symbolesCounter++;
-						break;
-					}
-				}
-			}
-			for (int i = 0; i < pass.size(); i++)
-			{
-				for (int j = 0; j < numbersString.size(); j++)
-				{
-					if (pass[i] == numbersString[j]) {
-						numbersCounter++;
-						break;
-					}
 
-				}
-
-			}
-
-			for (int i = 0; i < pass.size(); i++)
-			{
-				for (int j = 0; j < alpSize; j++)
-				{
-					if (pass[i] == alphapet[j]) {
-						letterCounter++;
-						break;
-					}
-				}
-
-			}
-
-		}
-
-
-		if (numbersCounter == 0 || symbolesCounter == 0 || letterCounter == 0) {
+		else if (!_is_CAPITAL(pass) || !_is_special(pass) || !_is_Number(pass) || !_is_small(pass)) {
 			std::cout << "Password should contain at least one symbole,one CAPITAL letter, one number : ";
-			numbersCounter = 0;
-			symbolesCounter = 0;
-			letterCounter = 0;
 			continue;
-
 		}
+
 		std::cout << "Enter the password again : ";
 		std::cin >> pass2;
 		if (pass == pass2) {
 			return pass;
 		}
+
 		else {
-			std::cout << "passwords not matching \n Enter the password again : ";
+			std::cout << "passwords not matching \nEnter the password : ";
 			continue;
 		}
 	}
 }
 
+
+bool _is_CAPITAL(std::string pass) {
+	for (int i = 0; i < pass.size(); i++)
+	{
+		for (int j = 0; j < 27; j++)
+		{
+			if (pass[i] == alphapet[j]) {
+				return true;
+			}
+		}
+
+	}
+	return false;
+}
+
+bool _is_special(std::string pass) {
+
+	char symbolesArray[33] = { '!','@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '`', '~', '[', ']', '{', '}', '\'','|','\\','"',':',';','/','?','>','<',',' ,'.' };
+	for (int i = 0; i < pass.size(); i++)
+	{
+		for (int j = 0; j < 33; j++)
+		{
+			if (pass[i] == symbolesArray[j]) {
+				return true;
+			}
+		}
+	}
+	return false;
+
+}
+
+bool _is_Number(std::string pass) {
+	std::string numbersString = "0123456789";
+
+	for (int i = 0; i < pass.size(); i++)
+	{
+		for (int j = 0; j < numbersString.size(); j++)
+		{
+			if (pass[i] == numbersString[j]) {
+				return true;
+			}
+
+		}
+
+	}
+	return false;
+
+}
+
+bool _is_small(std::string pass) {
+	std::string smallLetterString = "abcdefghijklmnopqrstuvwxyz";
+
+	for (int i = 0; i < pass.size(); i++)
+	{
+		for (int j = 0; j < smallLetterString.size(); j++)
+		{
+			if (pass[i] == smallLetterString[j]) {
+				return true;
+			}
+
+		}
+
+	}
+	return false;
+
+}
 
