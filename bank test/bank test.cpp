@@ -1,6 +1,7 @@
 //***************************************************************
 //                   HEADER FILE USED IN PROJECT
 //***************************************************************
+#define NOMINMAX
 
 #include<iostream>
 #include<fstream>
@@ -8,9 +9,9 @@
 #include<sstream>
 #include<cctype>
 #include<cstring>
-#include<cstring>
-#include <conio.h>
-//#include <windows.h>
+#include <conio.h> // for _getch() function
+#include <windows.h>
+
 
 
 //***************************************************************
@@ -117,6 +118,8 @@ void Account::create_account() {
 	std::cout << "Account Balance : " << balance << std::endl;
 	std::cout << "Enter password : ";
 	pass_word = password();
+	std::cout << "\n\nAccount is being created...please wait";
+	Sleep(1);
 	std::cout << "\n\nAccount Created ...";
 }
 
@@ -304,6 +307,9 @@ void Account::adjust(int account_Number) {
 }
 
 void Account::print_all_accounts() {
+	std::cout << "showing accounts in progress...please wait" << std::endl;
+	Sleep(1500);
+	system("CLS");
 	std::cout << "Number Of Account registered is " << count_accounts() << std::endl;
 
 	std::ifstream Read_Accounts("account.txt", std::ios::in);
@@ -358,7 +364,8 @@ int Account::count_accounts() {
 
 int main() {
 	Account ac;
-	int choice = 0, Account_Number = 0;
+	int choice;
+	int Account_Number = 0;
 	do {
 		mainMenu();
 		std::cin >> choice;
@@ -406,12 +413,13 @@ int main() {
 			break;
 
 		default:
-			std::cout << "choose options from 1 to 8...";
-			break;
+			if (std::cin.fail()) {
+
+			}
 		}
 		std::cin.get();
 		std::cin.ignore();
-	} while (choice != 8);
+	} while (choice != '8');
 }
 
 
@@ -563,6 +571,7 @@ int check_ID(int accountNumber) {
 //***************************************************************
 
 void Account::show_account() const {
+
 	std::cout << "\n Account Number : " << accountNumber << std::endl;
 	std::cout << " Account Name : " << fName << " " << sName << " " << tName << " " << lName << std::endl;
 	std::cout << " Account Type : " << type << std::endl;
