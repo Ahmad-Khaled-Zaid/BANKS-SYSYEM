@@ -25,7 +25,7 @@ private:
 	std::string tName;
 	std::string lName;
 	int balance;
-	char type;
+	std::string type;
 	int accounts_counter = 0;
 
 public:
@@ -63,7 +63,8 @@ void deposite_darw(int, int);
 void delete_account(int);
 void modify_account(int);
 void print_accounts();
-char check_type(char);
+//char check_type(char);
+std::string check_type(std::string);
 bool match(int);
 int check_operations_input(int);
 std::string password();
@@ -103,7 +104,7 @@ void Account::create_account() {
 	print_massege(accountNumber, fName, sName, tName, lName);
 	std::cout << "Enter the account Type (C/S) : ";
 	std::cin >> type;
-	type = check_type(toupper(type));
+	type = check_type(upperCase(type));
 	system("cls");
 	print_massege(accountNumber, fName, sName, tName, lName);
 	std::cout << "Account Type : " << type << std::endl;
@@ -669,11 +670,12 @@ std::string upperCase(std::string& name) {
 //           FUCNTION TO CHECK THE ACCOUNT TYPE
 //***************************************************************
 
-char check_type(char type) {
-	while (type != 'C' && type != 'S') {
+std::string check_type(std::string type) {
+
+	while (type != "C" && type != "S" && type.size() != 1) {
 		std::cout << "Please choose S type or C type : ";
 		std::cin >> type;
-		type = toupper(type);
+		type = upperCase(type);
 	}
 	return type;
 }
@@ -829,9 +831,11 @@ void print_massege(int accountNumber, std::string fName, std::string sName = "",
 	std::cout << "Name : " << fName << " " << sName << " " << tName << " " << lName << std::endl;
 }
 
-
+//***************************************************************
+//            FUCNTION TO ENCERPTION PASSWORD
+//***************************************************************
 std::string enctyptPass() {
-	char ch = 'a';
+	char ch = '-';
 	std::string password = "";
 	std::string empty;
 	while (ch != '\r')
