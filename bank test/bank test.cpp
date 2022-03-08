@@ -8,6 +8,10 @@
 #include<sstream>
 #include<cctype>
 #include<cstring>
+#include<cstring>
+#include <conio.h>
+//#include <windows.h>
+
 
 //***************************************************************
 //                   CLASS USED IN PROJECT
@@ -68,6 +72,7 @@ bool _is_CAPITAL(std::string);
 bool _is_special(std::string);
 bool _is_small(std::string);
 void print_massege(int, std::string, std::string, std::string, std::string);
+std::string enctyptPass();
 
 //***************************************************************
 //                  MEMBERS FUNCTIONS DEFENITIONS
@@ -712,7 +717,7 @@ std::string password() {
 	std::string pass;
 	std::string pass2;
 	while (true) {
-		std::cin >> pass;
+		pass = enctyptPass();
 		if (pass.size() < 8) {
 			std::cout << "You Should Enter 8 characters at least : ";;
 			continue;
@@ -724,7 +729,7 @@ std::string password() {
 		}
 
 		std::cout << "Enter the password again : ";
-		std::cin >> pass2;
+		pass2 = enctyptPass();
 		if (pass == pass2) {
 			return pass;
 		}
@@ -822,4 +827,25 @@ bool _is_small(std::string pass) {
 void print_massege(int accountNumber, std::string fName, std::string sName = "", std::string tName = "", std::string lName = "") {
 	std::cout << "Account ID : " << accountNumber << std::endl;
 	std::cout << "Name : " << fName << " " << sName << " " << tName << " " << lName << std::endl;
+}
+
+
+std::string enctyptPass() {
+	char ch = 'a';
+	std::string password = "";
+	std::string empty;
+	while (ch != '\r')
+	{
+		ch = _getch();
+		empty = ch;
+		if (_is_CAPITAL(empty) || _is_small(empty) || _is_special(empty) || _is_Number(empty)) {
+			password = password + ch;
+			std::cout << "*";
+
+		}
+		else continue;
+
+	}
+	std::cout << std::endl;
+	return password;
 }
